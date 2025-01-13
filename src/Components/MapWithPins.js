@@ -16,9 +16,9 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 const MapWithPins = ({ points }) => {
     const defaultPosition = [28.6139, 77.2090]; // Default position (Delhi, India)
-
+    console.log(points);
     return (
-        <MapContainer center={defaultPosition} zoom={5} style={{ height: "100%", width: "100%" }}>
+        <MapContainer center={defaultPosition} className="w-full h-full">
 
             {/* Add the map tiles */}
             <TileLayer
@@ -28,13 +28,10 @@ const MapWithPins = ({ points }) => {
 
             {/* Add markers for each point */}
 
-            {/*{points.map((point, index) => (*/}
-            {/*    <Marker key={index} position={[point.lat, point.lng]}>*/}
-            {/*        <Popup>*/}
-            {/*            <strong>{point.label}</strong>*/}
-            {/*        </Popup>*/}
-            {/*    </Marker>*/}
-            {/*))}*/}
+            {points.map((point, index) => (
+                 <Marker key={index} position={[point?.latitude, point?.longitude]}>
+                </Marker>
+            ))}
         </MapContainer>
     );
 };

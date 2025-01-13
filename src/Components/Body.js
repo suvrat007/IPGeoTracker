@@ -1,9 +1,10 @@
 import {Link} from "react-router-dom";
 
 import data from "../Utils/test.json";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addAddress} from "../Utils/dataSlice";
 import {useEffect} from "react";
+import {setCoordinates} from "../Utils/justPinsSlice";
 
 const Body = () =>{
 
@@ -19,7 +20,7 @@ const Body = () =>{
             const src = item?._source?.layers?.ip?.["ip.src"];
             const dst = item?._source?.layers?.ip?.["ip.dst"];
 
-            const pair = JSON.stringify([src, dst]);
+            const pair = JSON.stringify([src, dst].sort());     // both ips are sorted....order with remain same [a,b] and [b,a]
 
             if (!uniquePairs.has(pair)) {
                 // Add the pair to the Set and dispatch it
@@ -30,6 +31,28 @@ const Body = () =>{
     }, []);
 
     // console.log(data)
+    const paths = useSelector(store=> store.data.dataList);
+
+    // fetch latitude and longitute from api for each ip
+
+    const places = new Set();
+    paths.forEach(path => {
+        places.add(path[0]);
+        places.add(path[1]);
+    });
+
+
+
+    useEffect(() => {
+        places.forEach(async (ip) => {
+            const response = await fetch(
+                `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=${process.env.REACT_APP_GEOAPIFY_API_KEY}`
+            );
+            const json = await response.json();
+            console.log(ip, json?.location);
+            (json?.location && dispatch(setCoordinates(json?.location)));
+        })
+    }, [dispatch,places]);
 
     return(
         <div>
