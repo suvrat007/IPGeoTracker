@@ -3,18 +3,14 @@ import {createSlice} from "@reduxjs/toolkit";
 const locationSlice = createSlice({
     name: 'location',
     initialState: {
-        lat:[],
-        long:[],
+        pathObjects: [],
     },
     reducers: {
-        addLatitude: (state, action) => {
-            state.lat.push(action.payload.latitude);
+        addPathPair: (state, action) => {
+            state.pathObjects.push(action.payload);
         },
-        addLongitude: (state, action) => {
-            state.long.push(action.payload.longitude);
-        }
     }
 });
 
-export const {addLatitude, addLongitude} = locationSlice.actions;
+export const {addPathPair} = locationSlice.actions;
 export default locationSlice.reducer;

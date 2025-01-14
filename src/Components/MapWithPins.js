@@ -1,5 +1,5 @@
 import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {MapContainer, TileLayer, Marker, Popup, Polyline} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -14,14 +14,14 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const MapWithPins = React.memo(
-    ({ points = [] }) => {
+
+const MapWithPins = ({ points }) => {
         const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
-        console.log(points);
+        // console.log(points);
         return (
             <MapContainer
                 center={defaultPosition}
-                zoom={2}
+                zoom={3}
                 minZoom={3}
                 maxZoom={10}
                 worldCopyJump={true} // Prevents horizontal tiling
@@ -37,16 +37,18 @@ const MapWithPins = React.memo(
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
                 {points.map((point, index) => (
-                    point.location.latitude && point.location.longitude ? ( // Ensure valid lat/lng
+                    (point?.location && point?.location) ? ( // Ensure valid lat/lng
                         <Marker key={index} position={[point.location.latitude, point.location.longitude]}>
-                            <Popup>{point.city.name || `Lat: ${point.location.latitude}, Lon: ${point.location.longitude}`}</Popup>
+                            <Popup>{point.city.name}</Popup>
                         </Marker>
                     ) : null
                 ))}
+
+
             </MapContainer>
         );
-    },
-    (prevProps, nextProps) => JSON.stringify(prevProps.points) === JSON.stringify(nextProps.points) // Avoid re-render if points are unchanged
-);
+    }
+    // (prevProps, nextProps) => JSON.stringify(prevProps.points) === JSON.stringify(nextProps.points) // Avoid re-render if points are unchanged
+
 
 export default MapWithPins;
