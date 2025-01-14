@@ -7,33 +7,46 @@ import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIconShadow from "leaflet/dist/images/marker-shadow.png";
 
-let DefaultIcon = L.icon({
+const DefaultIcon = L.icon({
     iconUrl: markerIcon,
     shadowUrl: markerIconShadow,
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const MapWithPins = ({ points }) => {
-    const defaultPosition = [28.6139, 77.2090]; // Default position (Delhi, India)
-    console.log(points);
-    return (
-        <MapContainer center={defaultPosition} className="w-full h-full">
-
-            {/* Add the map tiles */}
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-
-            {/* Add markers for each point */}
-
-            {points.map((point, index) => (
-                 <Marker key={index} position={[point?.latitude, point?.longitude]}>
-                </Marker>
-            ))}
-        </MapContainer>
-    );
-};
+const MapWithPins = React.memo(
+    ({ points = [] }) => {
+        const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
+        console.log(points);
+        return (
+            <MapContainer
+                center={defaultPosition}
+                zoom={2}
+                minZoom={3}
+                maxZoom={10}
+                worldCopyJump={true} // Prevents horizontal tiling
+                maxBounds={[
+                    [-90, -180], // Southwest corner
+                    [90, 180],   // Northeast corner
+                ]}
+                maxBoundsViscosity={1.0} // Prevents panning outside bounds
+                style={{ width: "100%", height: "100vh" }} // Fullscreen height
+            >
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                {points.map((point, index) => (
+                    point.location.latitude && point.location.longitude ? ( // Ensure valid lat/lng
+                        <Marker key={index} position={[point.location.latitude, point.location.longitude]}>
+                            <Popup>{point.city.name || `Lat: ${point.location.latitude}, Lon: ${point.location.longitude}`}</Popup>
+                        </Marker>
+                    ) : null
+                ))}
+            </MapContainer>
+        );
+    },
+    (prevProps, nextProps) => JSON.stringify(prevProps.points) === JSON.stringify(nextProps.points) // Avoid re-render if points are unchanged
+);
 
 export default MapWithPins;

@@ -10,8 +10,6 @@ const Body = () =>{
 
     const dispatch = useDispatch();
 
-
-
     useEffect(() => {
         // Use a Set to store unique stringified pairs
         const uniquePairs = new Set();
@@ -33,15 +31,14 @@ const Body = () =>{
     // console.log(data)
     const paths = useSelector(store=> store.data.dataList);
 
-    // fetch latitude and longitute from api for each ip
+    // fetch latitude and longitute from api for each unque ip
 
+    // making set of unique ips
     const places = new Set();
     paths.forEach(path => {
         places.add(path[0]);
         places.add(path[1]);
     });
-
-
 
     useEffect(() => {
         places.forEach(async (ip) => {
@@ -50,7 +47,7 @@ const Body = () =>{
             );
             const json = await response.json();
             console.log(ip, json?.location);
-            (json?.location && dispatch(setCoordinates(json?.location)));
+            (json?.location && dispatch(setCoordinates(json)));
         })
     }, [dispatch,places]);
 
@@ -58,9 +55,6 @@ const Body = () =>{
         <div>
             <h1>Want to know where does your request travel?</h1>
             <input type="file" accept=".json"/>
-            {/*{data.map((i) => {*/}
-            {/*    dispatch(addAddress([i?._source?.layers?.ip["ip.src"], i?._source?.layers?.ip["ip.dst"]]));*/}
-            {/*})}*/}
             <button className="border-2"><Link to="/map">Map</Link></button>
         </div>
     )
