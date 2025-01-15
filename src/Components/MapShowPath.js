@@ -6,13 +6,33 @@ import React from "react";
 
 const DefaultIcon = L.icon({
     iconUrl: markerIcon,
-    shadowUrl: markerIconShadow,
+    // shadowUrl: markerIconShadow,
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const MapShowPath = ({ points }) => {
     const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
+
+    const uniquePoints = new Set()
+    // Add unique coordinates to the set
+    points
+        .filter(
+            (point) =>
+                (point[0]?.location?.latitude && point[0]?.location?.longitude) ||
+                (point[1]?.location?.latitude && point[1]?.location?.longitude)
+        )
+        .forEach((point) => {
+            if (point[0]?.location?.latitude && point[0]?.location?.longitude) {
+                uniquePoints.add(JSON.stringify([point[0].location.latitude, point[0].location.longitude]));
+            }
+            if (point[1]?.location?.latitude && point[1]?.location?.longitude) {
+                uniquePoints.add(JSON.stringify([point[1].location.latitude, point[1].location.longitude]));
+            }
+        });
+
+    // Convert Set to an array of parsed coordinates
+    const coordinatesArray = Array.from(uniquePoints).map((coord) => JSON.parse(coord));
 
     return (
         <MapContainer
@@ -34,29 +54,44 @@ const MapShowPath = ({ points }) => {
             />
             {points.map((point, index) => (
                 (point[0]?.location || point[1]?.location) ? (
-                    <React.Fragment key={index}>
+                    <>
                         {point[0]?.location?.latitude && point[0]?.location?.longitude && (
                             <Marker position={[point[0]?.location?.latitude, point[0]?.location?.longitude]}>
-                                <Popup>{point[0]?.city?.name}</Popup>
+                                <Popup>{point[0]?.city?.name}, {point[0]?.id}</Popup>
                             </Marker>
                         )}
                         {point[1]?.location?.latitude && point[1]?.location?.longitude && (
                             <Marker position={[point[1]?.location?.latitude, point[1]?.location?.longitude]}>
-                                <Popup>{point[1]?.city?.name}</Popup>
+                                <Popup>{point[1]?.city?.name}, {point[1]?.id}</Popup>
                             </Marker>
                         )}
-                    </React.Fragment>
+                    </>
                 ) : null
             ))}
-            <Polyline
-                positions={points
-                    .filter(point => point[0]?.location?.latitude && point[0]?.location?.longitude &&
-                        point[1]?.location?.latitude && point[1]?.location?.longitude)
-                    .map(point => [
-                        [point[0]?.location?.latitude, point[0]?.location?.longitude],
-                        [point[1]?.location?.latitude, point[1]?.location?.longitude]
-                    ])}
-            />
+            {/*<Polyline*/}
+            {/*    positions={points*/}
+            {/*        .filter(point => point[0]?.location?.latitude && point[0]?.location?.longitude &&*/}
+            {/*            point[1]?.location?.latitude && point[1]?.location?.longitude)*/}
+            {/*        .map(point => [*/}
+            {/*            [point[0]?.location?.latitude, point[0]?.location?.longitude],*/}
+            {/*            [point[1]?.location?.latitude, point[1]?.location?.longitude]*/}
+            {/*        ])}*/}
+            {/*/>*/}
+
+            {/*working code*/}
+            {/*<Polyline*/}
+            {/*positions={points.map((point) =>*/}
+            {/*    (point[0].location)? [point[0]?.location?.latitude,point[0]?.location?.longitude] : [point[1]?.location?.latitude,point[1]?.location?.longitude]*/}
+            {/*)}*/}
+            {/*/>*/}
+
+
+            {coordinatesArray.length > 1 && (
+                <Polyline positions={coordinatesArray} />
+            )}
+
+
+
         </MapContainer>
     );
 };

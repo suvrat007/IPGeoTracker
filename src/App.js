@@ -20,10 +20,10 @@ const appRouter = createBrowserRouter([
     },
 ]);
 
-function App() {
+const App= ()=> {
   return (
       <Provider store={store}>
-        <div>
+        <div className="border-2 h-[100vh] bg-gradient-to-r from-teal-200 to-lime-200">
           <RouterProvider router={appRouter} />
         </div>
       </Provider>

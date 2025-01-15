@@ -43,7 +43,7 @@ const MapPath = () => {
     },[])
 
     const points = useSelector((state) => state.location.pathObjects);
-    console.log(points);
+    // console.log(points);
     return(
         <div>
             <MapShowPath points={points}  />

@@ -17,7 +17,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 const MapWithPins = ({ points }) => {
         const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
-        // console.log(points);
+        console.log(points);
         return (
             <MapContainer
                 center={defaultPosition}
@@ -39,12 +39,14 @@ const MapWithPins = ({ points }) => {
                 {points.map((point, index) => (
                     (point?.location && point?.location) ? ( // Ensure valid lat/lng
                         <Marker key={index} position={[point.location.latitude, point.location.longitude]}>
-                            <Popup>{point.city.name}</Popup>
+                            <Popup>{point.city.name}, {point.ip}</Popup>
                         </Marker>
                     ) : null
                 ))}
 
-
+                {/*<Polyline*/}
+                {/*    positions={[points?.location?.latitude, points?.location?.longitude]}*/}
+                {/*/>*/}
             </MapContainer>
         );
     }
