@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {auth} from "../Utils/firebaseConfig";
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 import {checkValidateData} from "../Utils/Validate";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {switchLogin} from "../Utils/loggedinSlice";
+import {useNavigate} from "react-router";
 
 const Login = () => {
     // const auth = getAuth();
@@ -15,29 +16,62 @@ const Login = () => {
 
 
     const dispatch = useDispatch();
-    const handleButtonClick = (e) => {
 
-        // Validate Data
+    const handleButtonClick = async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        setErrorMessage({}); // Clear previous errors
+
+        if (!email) {
+            setErrorMessage("Email is required!" );
+            return;
+        }
+
+        if (!password) {
+            setErrorMessage("Password is required!" );
+            return;
+        }
+
+        if (!isSignInForm && !name) {
+            setErrorMessage( "Name is required for sign-up!" );
+            return;
+        }
         const message = checkValidateData(email, password);
         setErrorMessage(message);
         if(message) return;
 
-        e.preventDefault(); // Prevent form from reloading the page
-        if (!isSignInForm) {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(dispatch(switchLogin))
-                .then((value) => console.log("User created:", value))
-                .catch((error) => setErrorMessage(error.message)); // Handle errors
-        } else {
-            signInWithEmailAndPassword(auth, email, password)
-                .then(dispatch(switchLogin))
-                .then((value) => console.log("User signed in:", value))
-                .catch((error) => setErrorMessage(error.message)); // Handle errors
+        try {
+            if (isSignInForm) {
+                await signInWithEmailAndPassword(auth, email, password).then(dispatch(switchLogin()));
+                console.log("Logged in successfully");
+            } else {
+                await createUserWithEmailAndPassword(auth, email, password).then(dispatch(switchLogin()));
+                console.log("Signed up successfully");
+            }
+        } catch (error) {
+            console.error("Authentication error:", error.message);
+
+            // Map Firebase error codes to user-friendly messages
+            if (error.code === "auth/user-not-found") {
+                setErrorMessage((prev) => ({ ...prev, email: "No account found with this email." }));
+            } else if (error.code === "auth/wrong-password") {
+                setErrorMessage((prev) => ({ ...prev, password: "Incorrect password. Please try again." }));
+            } else if (error.code === "auth/email-already-in-use") {
+                setErrorMessage((prev) => ({ ...prev, email: "This email is already in use." }));
+            } else {
+                setErrorMessage((prev) => ({ ...prev, general: error.message }));
+            }
         }
     };
 
+
     const toggleSignIn = () =>{
         setIsSignInForm(!isSignInForm);
+    }
+
+    const loggedInChecker = useSelector(store => store.login.isLoggedin);
+    const navigate = useNavigate();
+    if (loggedInChecker) {
+        navigate('/');
     }
 
     return (

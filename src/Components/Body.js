@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const Body = () => {
     const dispatch = useDispatch();
     const [inputData, setInputData] = useState([]); // Initialize with an empty array
-
+    const [checkInput, setCheckInput] = useState(false);
     const isLoggedin = useSelector((state) => state.login.isLoggedin);
 
 
@@ -27,6 +27,8 @@ const Body = () => {
 
             reader.readAsText(file);
         }
+
+
     };
 
     useEffect(() => {
@@ -46,9 +48,9 @@ const Body = () => {
                 }
             }
         });
-    }, [inputData, dispatch]); // Add dispatch as a dependency to ensure best practices
+        // setCheckInput(true);   // inputs data only when file is entered
 
-    
+        }, [inputData, dispatch]); // Add dispatch as a dependency to ensure best practices
 
     return (
         <div className="absolute flex flex-col border-2 text-lg top-1/2 left-1/2 origin-center">
@@ -59,10 +61,10 @@ const Body = () => {
                 <input type="file" accept=".json" onChange={handleFileChange}/>
                 <div className="flex flex-row">
                     <button className="border-2 text-black bg-white p-2 m-2 rounded-lg">
-                        <Link to="/map">Map with only pins</Link>
+                        {(checkInput) ? "Map with only pins" : <Link to="/map">Map with only pins</Link>}
                     </button>
                     <button className="border-2 text-black bg-white p-2 m-2 rounded-lg">
-                        <Link to="/mapPath">Map with path</Link>
+                        {(checkInput) ? "Map with path" : <Link to="/mapPath">Map with path</Link>}
                     </button>
                 </div>
             </div>
