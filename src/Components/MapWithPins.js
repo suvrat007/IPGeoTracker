@@ -18,11 +18,13 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 const MapWithPins = ({ points }) => {
         const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
-        console.log(points);
+        // console.log(points);
         return (
-            <div>
-                <button><Link to="/mapPath">See Path</Link></button>
 
+            <div>
+                <button
+                    className="absolute top-4 right-4 z-10 bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
+                    ><Link to="/mapPath">See Path</Link></button>
                 <MapContainer
                     center={defaultPosition}
                     zoom={3}

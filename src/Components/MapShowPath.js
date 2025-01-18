@@ -38,7 +38,7 @@ const MapShowPath = ({ points }) => {
     return (
         <div className="relative">
             <button className="absolute top-4 right-4 z-10 bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
-                    ><Link to="/map">See Pins Only</Link></button>
+            ><Link to="/map">See Pins Only</Link></button>
             <MapContainer
                 center={defaultPosition}
                 zoom={3}

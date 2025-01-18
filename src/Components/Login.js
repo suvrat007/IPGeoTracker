@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {auth} from "../Utils/firebaseConfig";
+import {auth, firestore} from "../Utils/firebaseConfig";
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
 import {checkValidateData} from "../Utils/Validate";
 import {useDispatch, useSelector} from "react-redux";
 import {switchLogin} from "../Utils/loggedinSlice";
-import {useNavigate} from "react-router";
+import {useNavigate} from "react-router"
+import {addDoc, collection, doc, setDoc} from "firebase/firestore";
 
 const Login = () => {
     // const auth = getAuth();
@@ -41,11 +42,16 @@ const Login = () => {
 
         try {
             if (isSignInForm) {
-                await signInWithEmailAndPassword(auth, email, password).then(dispatch(switchLogin()));
+                await signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const uid = userCredential.user.uid;
+                        dispatch(switchLogin(uid));
+                    });
                 console.log("Logged in successfully");
             } else {
-                await createUserWithEmailAndPassword(auth, email, password).then(dispatch(switchLogin()));
-                console.log("Signed up successfully");
+                await createUserWithEmailAndPassword(auth, email, password)
+                    .then(user=> dispatch(switchLogin(user.user.uid)));
+                console.log("Signed up successfully" );
             }
         } catch (error) {
             console.error("Authentication error:", error.message);
@@ -74,35 +80,43 @@ const Login = () => {
         navigate('/');
     }
 
-    return (
-        <div className="w-3/12">
-            <form className="flex flex-col">
-                <h1 className="font-bold text-3xl py-3 my-2 text-white">{isSignInForm ? "Log In" : "Sign Up"}</h1>
-                {!isSignInForm && <input type="text" placeholder="Full Name" onChange={(e)=> setName(e.target.value)} className="p-3 my-3 "/>}
-                <input type="email" value={email} className="p-3 my-3" placeholder="EmailId" onChange={(e) => setEmail(e.target.value)}/>
-                <input type="password" value={password} placeholder="Password" className="p-3 my-3" onChange={(e) => setPassword(e.target.value)}/>
-                <p>{errorMessage}</p>
-                <button type="submit"
-                        onClick={handleButtonClick}
-                        className="p-3 my-3 w-full bg-red-700 text-white rounded-lg">{isSignInForm ? "Log In" : "Sign Up"
-                }</button>
-                {!isSignInForm &&
-                    <div className="p-2 m-2">
-                        <p className="text-gray-500  font-medium">
-                            Password must contain :
-                            <ul className="text-gray-500 text-[12px] leading-4  font-medium">
-                                <li>Atleast 8 Characters</li>
-                                <li>Atleast 1 Uppercase character</li>
-                                <li>Atleast 1 Special character</li>
-                                <li>Atleast 1 Number</li>
 
-                            </ul>
-                        </p>
-                    </div>
-                }
-                <p className="my-3 text-white cursor-pointer" onClick={toggleSignIn}>
-                    {isSignInForm ? "New here? Sign Up NOW !" : "Already a user? Log In here."}</p>
-            </form>
+
+    return (
+        <div className="relative flex justify-center top-[4rem]">
+            <div className="w-4/12 backdrop-blur">
+                <form className="flex flex-col border-2 bg-opacity-100 p-10 rounded-xl ">
+                    <h1 className="font-bold text-3xl py-3 my-2 text-white">{isSignInForm ? "Log In" : "Sign Up"}</h1>
+                    {!isSignInForm &&
+                        <input type="text" placeholder="Full Name" onChange={(e) => setName(e.target.value)}
+                               className="p-3 my-3 "/>}
+                    <input type="email" value={email} className="p-3 my-3 " placeholder="Email Id"
+                           onChange={(e) => setEmail(e.target.value)}/>
+                    <input type="password" value={password} placeholder="Password" className="p-3 my-3"
+                           onChange={(e) => setPassword(e.target.value)}/>
+                    <p>{errorMessage}</p>
+                    <button type="submit"
+                            onClick={handleButtonClick}
+                            className="p-3 my-3 w-full bg-red-700 text-white rounded-lg">{isSignInForm ? "Log In" : "Sign Up"
+                    }</button>
+                    {!isSignInForm &&
+                        <div className="p-2 m-2">
+                            <p className="text-gray-500  font-medium">
+                                Password must contain :
+                                <ul className="text-gray-500 text-[12px] leading-4  font-medium">
+                                    <li>Atleast 8 Characters</li>
+                                    <li>Atleast 1 Uppercase character</li>
+                                    <li>Atleast 1 Special character</li>
+                                    <li>Atleast 1 Number</li>
+
+                                </ul>
+                            </p>
+                        </div>
+                    }
+                    <p className="my-3 text-white cursor-pointer" onClick={toggleSignIn}>
+                        {isSignInForm ? "New here? Sign Up NOW !" : "Already a user? Log In here."}</p>
+                </form>
+            </div>
         </div>
 
     )

@@ -29,9 +29,14 @@ const appRouter = createBrowserRouter([
 const App= ()=> {
   return (
       <Provider store={store}>
-        <div className="border-2 h-[100vh] bg-gradient-to-r from-teal-200 to-lime-200">
-          <RouterProvider router={appRouter} />
-        </div>
+
+          <div className="bg-cover bg-center h-screen bg-earth_space bg-blackOverlay">
+              <div className="w-[100vw] h-[100vh]">
+                  <RouterProvider router={appRouter}/>
+              </div>
+          </div>
+
+
       </Provider>
   );
 }
