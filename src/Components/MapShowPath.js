@@ -1,6 +1,5 @@
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerIconShadow from "leaflet/dist/images/marker-shadow.png";
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
 import React from "react";
 import {Link} from "react-router-dom";
@@ -73,6 +72,7 @@ const MapShowPath = ({ points }) => {
                         </>
                     ) : null
                 ))}
+
                 {/*<Polyline*/}
                 {/*    positions={points*/}
                 {/*        .filter(point => point[0]?.location?.latitude && point[0]?.location?.longitude &&*/}
