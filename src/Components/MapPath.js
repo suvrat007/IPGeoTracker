@@ -28,9 +28,9 @@ const MapPath = () => {
 
         ips.map(async (ip) => {
             set.add(ip);
-            const a =await fetchData(ip[0]);
+            const a =await fetchData(ip.src);
             // console.log(a);
-            const b = await fetchData(ip[1]);
+            const b = await fetchData(ip.dst);
 
             const pair= JSON.stringify([a,b].sort());
             if (!set.has(pair)) {

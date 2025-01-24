@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addAddress } from "../Utils/dataSlice";
 import { useEffect, useState } from "react";
 import { firestore } from "../Utils/firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection,query, getDocs , doc,setDoc} from "firebase/firestore";
+import SavedData from "./SavedData";
 
 const Body = () => {
     const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const Body = () => {
             };
             reader.readAsText(file);
         }
-    };
+    }; // reading and extracting data from file to state
 
     useEffect(() => {
         if (!inputData || inputData.length === 0) return;
@@ -41,15 +42,18 @@ const Body = () => {
                 const pair = JSON.stringify([src, dst].sort());
                 if (!uniquePairs.has(pair)) {
                     uniquePairs.add(pair);
-                    dispatch(addAddress([src, dst]));
+                    dispatch(addAddress({src, dst}));
                 }
             }
         });
     }, [inputData, dispatch]);
 
+    const coordinateList = useSelector((state) => state.data.dataList);
+console.log(coordinateList);
+
     const handleSaveData = async () => {
         try {
-            if (!inputData || inputData.length === 0) {
+            if (!coordinateList || coordinateList.length === 0) {
                 console.error("No input data to save.");
                 return;
             }
@@ -58,16 +62,28 @@ const Body = () => {
                 return;
             }
 
-            const fileDocRef = await addDoc(collection(firestore, usid), {
-                uid: usid,
-                data: inputData,
-            });
+            // setSaveCoords(coordinateList);
+            const userRef = await collection(firestore , usid );
+            const userQuery = await query(userRef);
+            const userDocSnapshot=await getDocs(userQuery);
+
+            if (userDocSnapshot.empty){
+                await setDoc(doc(userRef,"default"),{
+                    data:coordinateList,
+                })
+            }else{
+                await addDoc(userRef, {
+                    data: coordinateList,
+                });
+            }
 
             // console.log(`Document written with ID: ${fileDocRef.id}`);
         } catch (e) {
             console.error("Error adding document to Firestore: ", e);
         }
     };
+
+
 
     return (
         <div className="flex justify-center relative top-[25%]">
@@ -76,12 +92,12 @@ const Body = () => {
                     <h1>Want to know where your request travels?</h1>
                 </div>
                 <div className="flex flex-col text-center">
-                    <div className="relative flex origin-center left-[30%]">
+                    <div className="relative flex flex-col items-center">
                         <input
                             type="file"
                             accept=".json"
                             onChange={handleFileChange}
-                            className="p-2 m-2 ml-10"
+                            className="p-2  ml-10"
                         />
                     </div>
                     <div className="flex flex-row justify-center">
@@ -118,6 +134,7 @@ const Body = () => {
                     </div>
                 )}
             </div>
+            {isLoggedin ? <SavedData userId={usid} /> : null}
         </div>
     );
 };

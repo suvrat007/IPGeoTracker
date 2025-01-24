@@ -12,8 +12,8 @@ const Map = () =>{
 
     const paths = useSelector(store=> store.data.dataList);  // all the ips-->[src,dst]
     paths.map(p => {
-        places.add(p[0]);
-        places.add(p[1]);
+        places.add(p.src);
+        places.add(p.dst);
     });
 
     // storing only unique ip's data to redux

@@ -8,6 +8,9 @@ const dataSlice = createSlice({
     },
     reducers: {
         addAddress: (state, action) => {
+            if (state.dataList.length>0){
+                state.dataList=[];
+            }
             state.dataList.push(action.payload);
         },
     },
