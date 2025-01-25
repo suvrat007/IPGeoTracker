@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { collection, getDocs ,getDoc ,doc} from "firebase/firestore";
 import { firestore } from "../Utils/firebaseConfig";
 import {useDispatch} from "react-redux";
-import {addAddress} from "../Utils/dataSlice";
+import {addAddress, emptyAddress} from "../Utils/dataSlice";
+import {deleteCoordinates} from "../Utils/justPinsSlice";
+import {deletePathPair} from "../Utils/locationSlice";
 
 const SavedData = ({ userId }) => {
     const [fetchedData, setFetchedData] = useState([]);
@@ -16,7 +18,7 @@ const SavedData = ({ userId }) => {
         }
     }, [userId]);
 
-    const fetchAllFileData = async () => {
+    const fetchAllFileData =useCallback(async () => {
         try {
             setLoading(true); // Start loading
             const userCollectionRef = collection(firestore, userId);
@@ -35,7 +37,22 @@ const SavedData = ({ userId }) => {
         } finally {
             setLoading(false); // Stop loading
         }
-    };
+    },[]);
+    const handleCLick = useCallback (async (id) =>{
+
+        const docRef = doc(firestore, userId, id);
+        const docSnapshot = await getDoc(docRef);
+
+        if (docSnapshot.exists()) {
+            const data = docSnapshot.data()?.data; // Retrieve document data
+            data.forEach((docSnapshot) => {
+                dispatch(addAddress(docSnapshot));
+            })
+
+        } else {
+            console.log("No such document!");
+        }
+    },[userId,dispatch]);
 
     if (loading) {
         return <p>Loading...</p>; // Show loading state
@@ -45,32 +62,28 @@ const SavedData = ({ userId }) => {
         return <p>Error: {error}</p>; // Show error state
     }
 
-    const handleCLick = async (id) =>{
-        const docRef = doc(firestore, userId, id);
-        const docSnapshot = await getDoc(docRef);
 
-        if (docSnapshot.exists()) {
-            const data = docSnapshot.data()?.data; // Retrieve document data
-            dispatch(addAddress(data));
-        } else {
-            console.log("No such document!");
-        }
-    }
+    // console.log(fetchedData)
 
     return (
         <div>
             <h1>File IDs for User: {userId}</h1>
             {fetchedData.length > 0 ? (
-                <ul>
+                <div >
                     {fetchedData.map((id) => (
-                        <p className="translate-x-0.5"
+                        <p className=""
                            key={id}
-                           onClick={() => handleCLick(id)}
+                           onClick={()=>{
+                               dispatch(emptyAddress());
+                               dispatch(deleteCoordinates());
+                               dispatch(deletePathPair());
+                               handleCLick(id);
+                           }}
                         >
                             {id}
                         </p>
                     ))}
-                </ul>
+                </div>
             ) : (
                 <p>No files found.</p>
             )}

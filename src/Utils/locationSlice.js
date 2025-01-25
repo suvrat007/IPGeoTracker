@@ -9,8 +9,13 @@ const locationSlice = createSlice({
         addPathPair: (state, action) => {
             state.pathObjects.push(action.payload);
         },
+        deletePathPair: (state) => {
+            if(state.pathObjects.length > 0) {
+                state.pathObjects = [];
+            }
+        }
     }
 });
 
-export const {addPathPair} = locationSlice.actions;
+export const {addPathPair,deletePathPair} = locationSlice.actions;
 export default locationSlice.reducer;
