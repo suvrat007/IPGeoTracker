@@ -8,9 +8,9 @@ import {useNavigate} from "react-router";
 
 const Login = () => {
     // const auth = getAuth();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [name , setName] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name , setName] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
     const [isSignInForm, setIsSignInForm] = useState(false);
     const navigate = useNavigate();
@@ -42,9 +42,13 @@ const Login = () => {
             } else {
                 userCred = await createUserWithEmailAndPassword(auth, email, password);
             }
-            const uid = userCred.user.uid; // will change path
-            dispatch(switchLogin(uid));
-            navigate('/');
+
+            if (userCred){
+                const uid = userCred?.user?.uid; // will change path
+                dispatch(switchLogin(uid));
+                navigate('/');
+            }
+
             // console.log("Logged in successfully");
         } catch (error) {
             console.error("Authentication error:", error.message);

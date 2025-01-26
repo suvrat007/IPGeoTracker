@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addPathPair } from "../Utils/locationSlice";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import MapShowPath from "./MapShowPath";
+import {Link} from "react-router-dom";
 
 const MapPath = () => {
     const ips = useSelector((state) => state.data.dataList); // import pairs of ips
@@ -46,8 +47,24 @@ const MapPath = () => {
     // console.log(points);
     return(
         <div>
-            <MapShowPath points={points}  />
+            <div><MapShowPath points={points}/></div>
+
+            <div
+                className="fixed translate-z-2 top-0 right-0 w-[20%] h-[100vh] backdrop-blur text-white z-20 flex items-center px-4 shadow-md">
+                <div className="flex fixed justify-between w-[90%] p-2 mt-4 border-2 top-0 rounded-xl">
+
+                    <h1 className="text-xl font-bold"><Link to="/">Home</Link></h1>
+                    <button
+                        className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
+                    ><Link to="/map">See Pins Only</Link></button>
+
+                </div>
+                <div>
+
+                </div>
+            </div>
         </div>
+
     );
 };
 

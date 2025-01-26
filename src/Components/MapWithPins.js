@@ -21,10 +21,8 @@ const MapWithPins = ({ points }) => {
         // console.log(points);
         return (
 
-            <div>
-                <button
-                    className="absolute top-4 right-4 z-10 bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
-                    ><Link to="/mapPath">See Path</Link></button>
+            <div >
+
                 <MapContainer
                     center={defaultPosition}
                     zoom={3}
@@ -36,7 +34,8 @@ const MapWithPins = ({ points }) => {
                         [90, 180],   // Northeast corner
                     ]}
                     maxBoundsViscosity={1.0} // Prevents panning outside bounds
-                    style={{width: "100%", height: "100vh"}} // Fullscreen height
+                    style={{width: "80%", height: "100vh"}} // Fullscreen height
+                    className="bottom-0"
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

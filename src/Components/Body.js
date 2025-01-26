@@ -69,18 +69,21 @@ const Body = () => {
 
             // setSaveCoords(coordinateList);
             const userRef = await collection(firestore , usid );
-            const userQuery = await query(userRef);
-            const userDocSnapshot=await getDocs(userQuery);
+            // const userQuery = await query(userRef);
+            // const userDocSnapshot=await getDocs(userQuery);
 
-            if (userDocSnapshot.empty){
-                await setDoc(doc(userRef,fileName),{
-                    data:coordinateList,
-                })
-            }else{
-                await addDoc(userRef, {
-                    data: coordinateList,
-                });
-            }
+            await setDoc(doc(userRef,fileName),{
+                data:coordinateList,
+            })
+            // if (userDocSnapshot.empty){
+            //     await setDoc(doc(userRef,fileName),{
+            //         data:coordinateList,
+            //     })
+            // }else{
+            //     await addDoc(userRef, {
+            //         data: coordinateList,
+            //     });
+            // }
 
             // console.log(`Document written with ID: ${fileDocRef.id}`);
         } catch (e) {
@@ -96,66 +99,76 @@ const Body = () => {
 
 
     return (
-        <div className="flex flex-col items-center relative top-[15%]">
-            <div className="flex flex-col text-center text-lg items-center w-[50%] backdrop-blur p-4 border-2 rounded-xl">
-                <div className="m-2 p-2 text-4xl font-bold">
-                    <h1>Want to know where your request travels?</h1>
-                </div>
-                <div className="flex flex-col text-center">
-                    <div className="relative flex flex-col items-center">
-                        <input
-                            type="file"
-                            accept=".json"
-                            onChange={handleFileChange}
-                            onClick={() => {
-                                dispatch(emptyAddress());
-                            }}
-                            className="p-2  ml-10"
-                        />
+        <div >
+            <div className="flex flex-col items-center">
+                <div
+                    className="m-14 flex flex-col text-center text-lg items-center w-[50%] backdrop-blur p-4 border-2 rounded-xl">
+                    <div className="m-2 p-2 text-4xl font-bold">
+                        <h1>Want to know where your request travels?</h1>
                     </div>
-                    <div className="flex flex-row justify-center">
-                        <Link to="/map">
+                    <div className="flex flex-col text-center">
+                        <div className="relative flex flex-col items-center">
+                            <input
+                                type="file"
+                                accept=".json"
+                                onChange={handleFileChange}
+                                onClick={() => {
+                                    dispatch(emptyAddress());
+                                }}
+                                className="p-2  ml-10"
+                            />
+                        </div>
+                        <div className="flex flex-row justify-center">
+                            <Link to="/map">
 
-                            <button className="border-2 text-black bg-white p-2 m-2 mr-10 rounded-lg"
-                                    onClick={()=>{dispatch(deleteCoordinates());}}>
-                                Map with only pins
-                            </button>
-                        </Link>
-                        <Link to="/mapPath">
-                            <button className="border-2 text-black bg-white p-2 m-2 rounded-lg"
-                                    onClick={()=>{dispatch(deletePathPair());}}>
-                                Map with path
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-                {!isLoggedin ? (
-                    <div className="p-2 m-2 text-white">
-                        <p>Want to save your searches?</p>
-                        <p>
-                            <Link className="text-blue-300" to="/login">
-                                SIGN UP
+                                <button className="border-2 text-black bg-white p-2 m-2 mr-10 rounded-lg"
+                                        onClick={() => {
+                                            dispatch(deleteCoordinates());
+                                        }}>
+                                    Map with only pins
+                                </button>
                             </Link>
-                        </p>
+                            <Link to="/mapPath">
+                                <button className="border-2 text-black bg-white p-2 m-2 rounded-lg"
+                                        onClick={() => {
+                                            dispatch(deletePathPair());
+                                        }}>
+                                    Map with path
+                                </button>
+                            </Link>
+                        </div>
                     </div>
-                ) : (
-                    <div className="p-2 m-2 text-white ">
-                        <h3>Save Your Data</h3>
-                        <button
-                            onClick={handleSaveData}
-                            className="p-2 bg-blue-500 text-white rounded-md cursor-pointer"
-                        >
-                            Save File to Firestore
-                        </button>
-                        <button className="p-2 ml-4 bg-blue-500 text-white rounded-md cursor-pointer"
-                                onClick={handleLogout}>Log Out</button>
-                    </div>
-                )}
+                    {!isLoggedin ? (
+                        <div className="p-2 m-2 text-white">
+                            <p>Want to save your searches?</p>
+                            <p>
+                                <Link className="text-blue-300" to="/login">
+                                    SIGN UP
+                                </Link>
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="p-2 m-2 text-white ">
+                            <h3>Save Your Data</h3>
+                            <button
+                                onClick={handleSaveData}
+                                className="p-2 bg-blue-500 text-white rounded-md cursor-pointer"
+                            >
+                                Save File to Firestore
+                            </button>
+                            <button className="p-2 ml-4 bg-blue-500 text-white rounded-md cursor-pointer"
+                                    onClick={handleLogout}>Log Out
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className="m-4">
-                {isLoggedin ? <SavedData userId={usid} /> : null}
-            </div>
+            {isLoggedin ?
+                <div className="flex items-center mt-4">
+                    <SavedData userId={usid}/>
+                </div>: null}
         </div>
+
     );
 };
 

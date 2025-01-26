@@ -35,9 +35,7 @@ const MapShowPath = ({ points }) => {
     const coordinatesArray = Array.from(uniquePoints).map((coord) => JSON.parse(coord));
 
     return (
-        <div className="relative">
-            <button className="absolute top-4 right-4 z-10 bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
-            ><Link to="/map">See Pins Only</Link></button>
+        <div className="">
             <MapContainer
                 center={defaultPosition}
                 zoom={3}
@@ -49,7 +47,7 @@ const MapShowPath = ({ points }) => {
                     [90, 180],
                 ]}
                 maxBoundsViscosity={1.0}
-                style={{width: "100%", height: "100vh"}}
+                style={{width: "80%", height: "100vh"}}
 
             >
                 <TileLayer

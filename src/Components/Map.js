@@ -1,7 +1,9 @@
 import MapWithPins from "./MapWithPins";
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {setCoordinates} from "../Utils/justPinsSlice";
+import {Link} from "react-router-dom";
+
 
 const Map = () =>{
 
@@ -10,13 +12,11 @@ const Map = () =>{
     const places = useRef(new Set());// Use useRef to persist data across renders without re-initialization
 
     const paths = useSelector(store=> store.data.dataList);  // all the ips-->[src,dst]
-    // console.log(paths);
     paths.forEach((ip ) => {
-        // console.log(ip[key]);
         places.current.add(ip.src);
         places.current.add(ip.dst);
     });
-    console.log(places.current);
+
 
     const fetchedIp = useRef(new Set()); // Tracks fetched IPs to prevent redundant API calls.
     // storing only unique ip's data to redux
@@ -46,10 +46,30 @@ const Map = () =>{
     // console.log(places);
 
     return (
-        <div>
-            {/*<h1>Map with Multiple Points</h1>*/}
-            <MapWithPins points={points}/>
+        <div className=" ">
+
+
+            <div>
+                <MapWithPins points={points}/>
+            </div>
+
+            <div className="fixed translate-z-2 top-0 right-0 w-[20%] h-[100vh] backdrop-blur text-white z-20 flex items-center px-4 shadow-md">
+                <div className="flex fixed justify-between w-[90%] p-2 mt-4 border-2 top-0 rounded-xl">
+
+                    <h1 className="text-xl font-bold"><Link to="/">Home</Link></h1>
+                    <button
+                        className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200"
+                    ><Link to="/mapPath">See Path</Link></button>
+
+                </div>
+                <div>
+
+                </div>
+            </div>
+
+
         </div>
+
     );
 }
 
