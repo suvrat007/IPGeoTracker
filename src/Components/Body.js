@@ -119,7 +119,7 @@ const Body = () => {
                             />
                         </div>
                         <div className="flex flex-row justify-center">
-                            <Link to="/map">
+                            <Link to="/ map">
 
                                 <button className="border-2 text-black bg-white p-2 m-2 mr-10 rounded-lg"
                                         onClick={() => {
