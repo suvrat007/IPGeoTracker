@@ -3,19 +3,22 @@ import { useDispatch, useSelector } from "react-redux";
 import {addAddress, emptyAddress} from "../Utils/dataSlice";
 import { useEffect, useState } from "react";
 import {auth, firestore} from "../Utils/firebaseConfig";
-import { addDoc, collection,query, getDocs , doc,setDoc} from "firebase/firestore";
+import {collection , doc,setDoc} from "firebase/firestore";
 import SavedData from "./SavedData";
 import {deleteCoordinates} from "../Utils/justPinsSlice";
 import {deletePathPair} from "../Utils/locationSlice";
 import {logout} from "../Utils/loggedinSlice";
+import {ToastContainer, toast, Slide} from 'react-toastify';
 
 const Body = () => {
     const dispatch = useDispatch();
-
     const [inputData, setInputData] = useState([]);
     const isLoggedin = useSelector((state) => state.login.isLoggedin);
     const usid = useSelector((store) => store.login.uid);
     const [fileName, setFileName] = useState("");
+    const [refresh, setRefresh] = useState(true);
+
+
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -25,7 +28,6 @@ const Body = () => {
             reader.onload = (e) => {
                 try {
                     const json = JSON.parse(e.target.result);
-                    // console.log("Parsed JSON: ", json);
                     setInputData(json);
                 } catch (error) {
                     console.error("Error parsing JSON:", error);
@@ -34,7 +36,6 @@ const Body = () => {
             reader.readAsText(file);
         }
     }; // reading and extracting data from file to state
-
     useEffect(() => {
         if (!inputData || inputData.length === 0) return;
 
@@ -54,8 +55,6 @@ const Body = () => {
     }, [inputData, dispatch]);
 
     const coordinateList = useSelector((state) => state.data.dataList);
-// console.log(coordinateList);
-
     const handleSaveData = async () => {
         try {
             if (!coordinateList || coordinateList.length === 0) {
@@ -67,25 +66,12 @@ const Body = () => {
                 return;
             }
 
-            // setSaveCoords(coordinateList);
             const userRef = await collection(firestore , usid );
-            // const userQuery = await query(userRef);
-            // const userDocSnapshot=await getDocs(userQuery);
-
             await setDoc(doc(userRef,fileName),{
                 data:coordinateList,
             })
-            // if (userDocSnapshot.empty){
-            //     await setDoc(doc(userRef,fileName),{
-            //         data:coordinateList,
-            //     })
-            // }else{
-            //     await addDoc(userRef, {
-            //         data: coordinateList,
-            //     });
-            // }
-
-            // console.log(`Document written with ID: ${fileDocRef.id}`);
+            // call for rerender
+            setRefresh(prev=>!prev);
         } catch (e) {
             console.error("Error adding document to Firestore: ", e);
         }
@@ -96,48 +82,84 @@ const Body = () => {
         dispatch(logout());
     }
 
+    const handleNoInputMapping = () => {
+        toast("No input mapping!");
+    }
 
+    const checker = useSelector((state) => state.data.dataList);
 
     return (
-        <div >
+        <div>
             <div className="flex flex-col items-center">
-                <div
-                    className="m-14 flex flex-col text-center text-lg items-center w-[50%] backdrop-blur p-4 border-2 rounded-xl">
+                <div className="m-14 mt-20 flex flex-col text-center text-lg items-center w-[50%] backdrop-blur p-4 border-2 rounded-xl">
+
                     <div className="m-2 p-2 text-4xl font-bold">
                         <h1>Want to know where your request travels?</h1>
                     </div>
+
                     <div className="flex flex-col text-center">
-                        <div className="relative flex flex-col items-center">
+                        <div className="relative flex flex-row items-center">
                             <input
                                 type="file"
                                 accept=".json"
                                 onChange={handleFileChange}
                                 onClick={() => {
                                     dispatch(emptyAddress());
+                                    dispatch(deleteCoordinates());
+                                    dispatch(deletePathPair());
                                 }}
-                                className="p-2  ml-10"
+                                className="p-2"
                             />
-                        </div>
-                        <div className="flex flex-row justify-center">
-                            <Link to="/ map">
 
-                                <button className="border-2 text-black bg-white p-2 m-2 mr-10 rounded-lg"
-                                        onClick={() => {
-                                            dispatch(deleteCoordinates());
-                                        }}>
-                                    Map with only pins
-                                </button>
-                            </Link>
-                            <Link to="/mapPath">
-                                <button className="border-2 text-black bg-white p-2 m-2 rounded-lg"
-                                        onClick={() => {
-                                            dispatch(deletePathPair());
-                                        }}>
-                                    Map with path
-                                </button>
-                            </Link>
+                            {(checker.length!=0) ?
+                                <div className="flex flex-row justify-center">
+                                    <Link to="/map">
+                                        <button className="border-2 text-black bg-white p-2 m-2 mr-5 rounded-lg"
+                                                onClick={() => {
+                                                    dispatch(deleteCoordinates());
+                                                }}>
+                                            Map with only pins
+                                        </button>
+                                    </Link>
+                                    <Link to="/mapPath">
+                                        <button className="border-2 text-black bg-white p-2 m-2 rounded-lg"
+                                                onClick={() => {
+                                                    dispatch(deletePathPair());
+                                                }}>
+                                            Map with path
+                                        </button>
+                                    </Link>
+                        </div> : <div className="flex flex-row justify-center">
+                            <button className="border-2 text-black bg-gray-200 p-2 m-2 mr-5 rounded-lg "
+                                    onClick={() => {
+                                        handleNoInputMapping();
+                                    }}>
+                                Map with only pins
+                            </button>
+                            <button className="border-2 text-black bg-gray-200 p-2 m-2 rounded-lg"
+                                    onClick={
+                                        handleNoInputMapping
+                                    }>
+                                Map with path
+                                <ToastContainer
+                                    position="top-left"
+                                    autoClose={3000}
+                                    limit={10}
+                                    hideProgressBar={false}
+                                    newestOnTop={false}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable={false}
+                                    pauseOnHover={false}
+                                    theme="dark"
+                                    transition={Slide}
+                                />
+                            </button>
+                        </div>}
                         </div>
                     </div>
+
                     {!isLoggedin ? (
                         <div className="p-2 m-2 text-white">
                             <p>Want to save your searches?</p>
@@ -149,7 +171,7 @@ const Body = () => {
                         </div>
                     ) : (
                         <div className="p-2 m-2 text-white ">
-                            <h3>Save Your Data</h3>
+                            <h3 className="text-grey">Save Your Data</h3>
                             <button
                                 onClick={handleSaveData}
                                 className="p-2 bg-blue-500 text-white rounded-md cursor-pointer"
@@ -162,10 +184,11 @@ const Body = () => {
                         </div>
                     )}
                 </div>
+
             </div>
             {isLoggedin ?
                 <div className="flex items-center mt-4">
-                    <SavedData userId={usid}/>
+                    <SavedData userId={usid} refresh={refresh} setRefresh={setRefresh} />
                 </div>: null}
         </div>
 

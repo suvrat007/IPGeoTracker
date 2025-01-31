@@ -23,3 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+
+/src/Utils/test7.json
+/src/Utils/test6.json
+/src/Utils/test5.json

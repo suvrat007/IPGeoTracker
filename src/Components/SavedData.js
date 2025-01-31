@@ -1,62 +1,50 @@
-import { useDispatch } from "react-redux";
-import { addAddress, emptyAddress } from "../Utils/dataSlice";
-import { deleteCoordinates } from "../Utils/justPinsSlice";
-import { deletePathPair } from "../Utils/locationSlice";
 import useFetchCollection from "../hooks/useFetchCollection";
-import { doc, getDoc } from "firebase/firestore";
-import { firestore } from "../Utils/firebaseConfig";
+import useHandleFileClick from "../hooks/useHandleFileClick";
+import {deleteDoc, doc} from "firebase/firestore";
+import {firestore} from "../Utils/firebaseConfig";
 
-const SavedData = ({ userId }) => {
-    const dispatch = useDispatch();
-    const { data: fetchedData, loading, error } = useFetchCollection(userId);
-    // console.log(fetchedData);
-
-    // Function to handle clicking on a file ID
-    const handleClick = async (id) => {
-        try {
-            const docRef = doc(firestore, userId, id);
-            const docSnapshot = await getDoc(docRef);
-
-            if (docSnapshot.exists()) {
-                const data = docSnapshot.data()?.data; // Retrieve document data
-                if (data) {
-                    dispatch(emptyAddress(),deleteCoordinates(),deletePathPair());
-                    data.forEach((item) => dispatch(addAddress(item))); // Add each address to Redux
-                }
-            } else {
-                console.log("No such document!");
-            }
-        } catch (err) {
-            console.error("Error fetching document:", err);
-        }
-    };
+const SavedData = ({ userId , refresh , setRefresh}) => {
+    // const [refresh, setRefresh] = useState(true);
+    const { data: fetchedData, loading, error } = useFetchCollection(userId,refresh);
+    const handleFileClick = useHandleFileClick(userId);
 
     if (loading) {
         return <p>Loading...</p>; // Show loading state
     }
-
     if (error) {
         return <p>Error: {error}</p>; // Show error state
     }
 
+    const deleteElement = async (i) =>{
+        await deleteDoc(doc(firestore,userId, i));
+        setRefresh(prev=>!prev);
+    }
+
     return (
-        <div>
-            <div className="text-white m-auto w-[80%]">
-                <h1 className="text-2xl m-2 underline">File IDs:</h1>
-                {fetchedData.length > 0 ? (
-                    <div className="p-2 flex flex-row flex-wrap">
-                        {fetchedData.map((id) => (
-                            <p
-                                className="p-2 m-2 cursor-pointer border-2 rounded-lg text-white text-center backdrop-blur w-[24rem]"
-                                key={id}
-                                onClick={() => handleClick(id)}>
-                                {id}
-                            </p>
-                        ))}
-                    </div>
-                ) : (
-                    <p>No files found.</p>
-                )}
+        <div className="w-[80%] m-auto">
+            <div className="text-white">
+                <h1 className="text-2xl m-2 underline ">File IDs:</h1>
+                <div>
+                    {fetchedData.length > 0 ? (
+                        <div className="p-2 flex flex-row flex-wrap ">
+                            {fetchedData.map((id) => (
+                                <div className="flex flex-row w-1/3 mt-2">
+                                    <p
+                                    className="p-2 cursor-pointer border-2 rounded-l-lg text-white text-center backdrop-blur w-[85%]"
+                                    key={id}
+                                    onClick={() => {
+                                        handleFileClick(id);
+                                    }}>
+                                        {id}</p>
+                                    <button onClick={()=>deleteElement(id)}
+                                            className="border-2 p-2 mr-4 w-[15%] rounded-r-lg">Del</button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No files found.</p>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../Utils/firebaseConfig";
 
-const useFetchCollection = (userId) => {
+const useFetchCollection = (userId,refresh) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -32,7 +32,7 @@ const useFetchCollection = (userId) => {
         };
 
         fetchCollection();
-    }, [userId]);
+    }, [userId,refresh]);
 
     return { data, loading, error };
 };

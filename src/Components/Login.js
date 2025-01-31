@@ -1,17 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useId, useState} from 'react';
 import {auth} from "../Utils/firebaseConfig";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth";
+import {createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
 import {checkValidateData} from "../Utils/Validate";
 import {useDispatch, useSelector} from "react-redux";
-import {switchLogin} from "../Utils/loggedinSlice";
+import {loggedIn, switchLogin} from "../Utils/loggedinSlice";
 import {useNavigate} from "react-router";
 
 const Login = () => {
-    // const auth = getAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name , setName] = useState("");
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
     const [isSignInForm, setIsSignInForm] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -31,6 +30,7 @@ const Login = () => {
             setErrorMessage( "Name is required for sign-up!" );
             return;
         }
+
         const message = checkValidateData(email, password);
         setErrorMessage(message);
         if(message) return;
@@ -42,26 +42,22 @@ const Login = () => {
             } else {
                 userCred = await createUserWithEmailAndPassword(auth, email, password);
             }
+            const uid = userCred?.user?.uid; // will change path
+            dispatch(switchLogin(uid));
+            navigate('/');
 
-            if (userCred){
-                const uid = userCred?.user?.uid; // will change path
-                dispatch(switchLogin(uid));
-                navigate('/');
-            }
-
-            // console.log("Logged in successfully");
         } catch (error) {
             console.error("Authentication error:", error.message);
 
             // Map Firebase error codes to user-friendly messages
             if (error.code === "auth/user-not-found") {
-                setErrorMessage((prev) => ({ ...prev, email: "No account found with this email." }));
+                setErrorMessage("No account found with this email." );
             } else if (error.code === "auth/wrong-password") {
-                setErrorMessage((prev) => ({ ...prev, password: "Incorrect password. Please try again." }));
+                setErrorMessage("Incorrect password. Please try again." );
             } else if (error.code === "auth/email-already-in-use") {
-                setErrorMessage((prev) => ({ ...prev, email: "This email is already in use." }));
+                setErrorMessage("This email is already in use." );
             } else {
-                setErrorMessage((prev) => ({ ...prev, general: error.message }));
+                setErrorMessage(error.message);
             }
         }
     };
