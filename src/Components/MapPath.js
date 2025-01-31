@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {addPathPair, deletePathPair} from "../Utils/locationSlice";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import MapShowPath from "./MapShowPath";
 import {Link} from "react-router-dom";
 import useFetchCollection from "../hooks/useFetchCollection";
@@ -11,6 +11,7 @@ import {deleteCoordinates} from "../Utils/justPinsSlice";
 const MapPath = () => {
     const ips = useSelector((state) => state.data.dataList); // import pairs of ips
     const dispatch = useDispatch();
+    const [toggle, setToggle] = useState(false);
 
     const fetchData = async (ip) => {
         try {
@@ -45,13 +46,18 @@ const MapPath = () => {
         })
     },[])
 
+    const handleReRender=()=>{
+        setToggle(prev=>!prev);
+    }
+
     const points = useSelector((state) => state.location.pathObjects);
     // console.log(points);
     return(
         <div>
             <div><MapShowPath points={points}/></div>
 
-            <div className="fixed translate-z-2 top-0 right-0 w-[20%] h-[100vh] backdrop-blur-2xl text-white z-20 flex items-center px-4 shadow-md">
+            <div
+                className="fixed translate-z-2 top-0 right-0 w-[20%] h-[100vh] backdrop-blur-2xl text-white z-20 flex items-center px-4 shadow-md">
                 <div className="flex fixed justify-between w-[90%] p-2 mt-4 border-2 top-0 rounded-xl">
 
                     <Link to="/">
@@ -66,11 +72,15 @@ const MapPath = () => {
                     </Link>
 
                     <Link to="/map">
-                        <button className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200">See Pins Only</button>
+                        <button className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200">See Pins
+                            Only
+                        </button>
                     </Link>
 
                 </div>
-                <DisplayUserFiles/>
+                <DisplayUserFiles trigger={handleReRender}/>
+                <div className="hidden" >{toggle}</div>
+
             </div>
         </div>
 

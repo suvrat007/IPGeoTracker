@@ -12,7 +12,7 @@ const dataSlice = createSlice({
         },
         emptyAddress: (state) => {
             state.dataList = [];
-        }
+        },
     },
 
 })

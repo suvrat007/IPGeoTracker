@@ -1,6 +1,6 @@
 import MapWithPins from "./MapWithPins";
 import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {deleteCoordinates, setCoordinates} from "../Utils/justPinsSlice";
 import {Link} from "react-router-dom";
 import DisplayUserFiles from "./DisplayUserFiles";
@@ -14,15 +14,18 @@ const Map = () =>{
     const dispatch = useDispatch();
     const places = useRef(new Set());// Use useRef to persist data across renders without re-initialization
 
+
+    const [toggle, setToggle] = useState(false);
+
     const paths = useSelector(store=> store.data.dataList);  // all the ips-->[src,dst]
     paths.forEach((ip ) => {
         places.current.add(ip.src);
         places.current.add(ip.dst);
     });
 
-    console.log("reached")
 
     const fetchedIp = useRef(new Set()); // Tracks fetched IPs to prevent redundant API calls.
+
     // storing only unique ip's data to redux
     useEffect(() => {
         const fetchCoordinates = async () => {
@@ -44,14 +47,18 @@ const Map = () =>{
 
     const points = useSelector(state => state.justPins.coordinates);
 
-    // console.log(places);
+    const handleReRender=()=>{
+        setToggle(prev=>!prev);
+    }
+
 
     return (
         <div>
             <div>
                 <MapWithPins points={points}/>
             </div>
-            <div className="fixed top-0 right-0 w-[20%] h-[100vh] rounded-2xl backdrop-blur-2xl text-white z-20 flex items-center  px-4 shadow-md">
+            <div
+                className="fixed top-0 right-0 w-[20%] h-[100vh] rounded-2xl backdrop-blur-2xl text-white z-20 flex items-center  px-4 shadow-md">
                 <div className="flex fixed justify-between w-[90%] p-2 mt-4 border-2 top-0 rounded-xl">
                     <Link to="/">
                         <h1 className="text-xl font-bold cursor-pointer"
@@ -63,12 +70,15 @@ const Map = () =>{
                             Home
                         </h1>
                     </Link>
-
                     <Link to="/mapPath">
-                    <button  className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200">See Path</button>
+                        <button className=" bg-white text-black p-2 rounded-lg shadow-md hover:bg-gray-200">See Path
+                        </button>
                     </Link>
                 </div>
-                <DisplayUserFiles/>
+                <div style={{display: "none"}}>{toggle.toString()}</div>
+                <DisplayUserFiles trigger={handleReRender}/>
+                {/*<DisplayUserFiles />*/}
+
             </div>
 
 

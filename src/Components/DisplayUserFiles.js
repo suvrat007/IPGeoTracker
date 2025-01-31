@@ -1,12 +1,14 @@
 import React from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import useFetchCollection from "../hooks/useFetchCollection";
 import useHandleFileClick from "../hooks/useHandleFileClick";
+import {updateToggle} from "../Utils/dataSlice";
 
-const DisplayUserFiles = () =>{
+const DisplayUserFiles = ({trigger}) =>{
     const userId = useSelector(store=> store.login.uid);
     const { data: fetchedData } = useFetchCollection(userId);
     const handleFileClick = useHandleFileClick(userId);
+
     return(
         <div className="w-full justify-start ">
             {fetchedData.length > 0 ? (
@@ -16,7 +18,10 @@ const DisplayUserFiles = () =>{
                         <p
                             className="p-2 m-2 cursor-pointer border-2 rounded-lg text-white text-center backdrop-blur w-full"
                             key={id}
-                            onClick={() => handleFileClick(id)}>
+                            onClick={() => {
+                                handleFileClick(id);
+                                trigger();
+                            }}>
                             {id}
                         </p>
                         )
