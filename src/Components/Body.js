@@ -91,9 +91,9 @@ const Body = () => {
     return (
         <div>
             <div className="flex flex-col items-center">
-                <div className="m-14 mt-20 flex flex-col text-center text-lg items-center w-[50%] backdrop-blur p-4 border-2 rounded-xl">
+                <div className="m-14 mt-20 flex flex-col text-white text-center text-lg items-center w-[50%] backdrop-blur-[3px] p-4 border-2 rounded-xl">
 
-                    <div className="m-2 p-2 text-4xl font-bold">
+                    <div className="m-2 p-2 text-4xl font-bold ">
                         <h1>Want to know where your request travels?</h1>
                     </div>
 

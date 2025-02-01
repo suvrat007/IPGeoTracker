@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
+    "@splinetool/react-spline": "^4.0.0",
+    "@splinetool/runtime": "^1.9.59",
     "cra-template": "1.2.0",
     "dotenv": "^16.4.7",
     "firebase": "^11.2.0",
