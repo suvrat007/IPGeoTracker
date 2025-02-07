@@ -9,6 +9,8 @@ import {deleteCoordinates} from "../Utils/justPinsSlice";
 import {deletePathPair} from "../Utils/locationSlice";
 import {logout} from "../Utils/loggedinSlice";
 import {ToastContainer, toast, Slide} from 'react-toastify';
+import Spline from "@splinetool/react-spline";
+import Earth from "./Earth";
 
 const Body = () => {
     const dispatch = useDispatch();
@@ -89,112 +91,119 @@ const Body = () => {
     const checker = useSelector((state) => state.data.dataList);
 
     return (
-        <div className="ml-10">
-            <div className="flex flex-col items-center">
-                <div className=" mt-20 flex flex-col text-white text-center text-lg items-center w-[45rem] backdrop-blur-[3px] p-4 border-2 rounded-xl">
+        <div className="relative flex flex-row justify-between">
+            <div className="w-[60%] justify-between">
+                <div className="flex flex-col items-center">
+                    <div
+                        className=" mt-20 flex flex-col text-white text-center text-lg items-center w-[45rem] backdrop-blur-[3px] p-4 border-2 rounded-xl">
 
-                    <div className="m-2 p-2 text-4xl font-bold ">
-                        <h1>Want to know where your request travels?</h1>
-                    </div>
+                        <div className="m-2 p-2 text-4xl font-bold ">
+                            <h1>Want to know where your request travels?</h1>
+                        </div>
 
-                    <div className="flex flex-col text-center">
-                        <div className="flex flex-row items-center justify-between">
-                            <div className="w-1/3">
-                                <input
-                                    type="file"
-                                    accept=".json"
-                                    onChange={handleFileChange}
-                                    onClick={() => {
-                                        dispatch(emptyAddress());
-                                        dispatch(deleteCoordinates());
-                                        dispatch(deletePathPair());
-                                    }}
-                                    className="p-2 cursor-pointer "
-                                />
-                            </div>
+                        <div className="flex flex-col text-center">
+                            <div className="flex flex-row items-center justify-between">
+                                <div className="w-1/3">
+                                    <input
+                                        type="file"
+                                        accept=".json"
+                                        onChange={handleFileChange}
+                                        onClick={() => {
+                                            dispatch(emptyAddress());
+                                            dispatch(deleteCoordinates());
+                                            dispatch(deletePathPair());
+                                        }}
+                                        className="p-2 cursor-pointer "
+                                    />
+                                </div>
 
-                            {(checker.length != 0) ?
-                                <div className="flex flex-row justify-between text-lg">
-                                    <Link to="/map">
-                                        <button className="text-black bg-white p-2 m-2 rounded-lg"
+                                {(checker.length != 0) ?
+                                    <div className="flex flex-row justify-between text-lg">
+                                        <Link to="/map">
+                                            <button className="text-black bg-white p-2 m-2 rounded-lg"
+                                                    onClick={() => {
+                                                        dispatch(deleteCoordinates());
+                                                    }}>
+                                                Map with only pins
+                                            </button>
+                                        </Link>
+                                        <Link to="/mapPath">
+                                            <button className="text-black bg-white p-2 m-2 rounded-lg"
+                                                    onClick={() => {
+                                                        dispatch(deletePathPair());
+                                                    }}>
+                                                Map with path
+                                            </button>
+                                        </Link>
+                                    </div>
+                                    :
+                                    <div className="flex flex-row  justify-between">
+                                        <button className="text-black bg-gray-400 p-2 m-2 rounded-lg "
                                                 onClick={() => {
-                                                    dispatch(deleteCoordinates());
+                                                    handleNoInputMapping();
                                                 }}>
                                             Map with only pins
                                         </button>
-                                    </Link>
-                                    <Link to="/mapPath">
-                                        <button className="text-black bg-white p-2 m-2 rounded-lg"
-                                                onClick={() => {
-                                                    dispatch(deletePathPair());
-                                                }}>
+                                        <button className="text-black bg-gray-400 p-2 m-2 rounded-lg"
+                                                onClick={
+                                                    handleNoInputMapping
+                                                }>
                                             Map with path
+                                            <ToastContainer
+                                                position="top-left"
+                                                autoClose={3000}
+                                                limit={10}
+                                                hideProgressBar={false}
+                                                newestOnTop={false}
+                                                closeOnClick
+                                                rtl={false}
+                                                pauseOnFocusLoss
+                                                draggable={false}
+                                                pauseOnHover={false}
+                                                theme="dark"
+                                                transition={Slide}
+                                            />
                                         </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        {!isLoggedin ? (
+                            <div className="p-2 m-2 text-white">
+                                <p>Want to save your searches?</p>
+                                <p>
+                                    <Link className="text-blue-300" to="/login">
+                                        SIGN UP
                                     </Link>
-                                </div>
-                                :
-                                <div className="flex flex-row  justify-between">
-                                    <button className="text-black bg-gray-400 p-2 m-2 rounded-lg "
-                                            onClick={() => {
-                                                handleNoInputMapping();
-                                            }}>
-                                        Map with only pins
-                                    </button>
-                                    <button className="text-black bg-gray-400 p-2 m-2 rounded-lg"
-                                            onClick={
-                                                handleNoInputMapping
-                                            }>
-                                        Map with path
-                                        <ToastContainer
-                                            position="top-left"
-                                            autoClose={3000}
-                                            limit={10}
-                                            hideProgressBar={false}
-                                            newestOnTop={false}
-                                            closeOnClick
-                                            rtl={false}
-                                            pauseOnFocusLoss
-                                            draggable={false}
-                                            pauseOnHover={false}
-                                            theme="dark"
-                                            transition={Slide}
-                                        />
-                                    </button>
-                                </div>
-                            }
-                        </div>
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="p-2 m-2 text-white ">
+                                <h3 className="text-grey">Save Your Data</h3>
+                                <button
+                                    onClick={handleSaveData}
+                                    className="p-2 mt-2 bg-gradient-to-tr from-blue-700 from-0% to-violet-700 to-100% text-white rounded-md cursor-pointer"
+                                >
+                                    Save File to Firestore
+                                </button>
+                                <button className="p-2 mt-2 ml-4 bg-gradient-to-tr from-blue-700 from-0% to-violet-700 to-100% text-white rounded-md cursor-pointer"
+                                        onClick={handleLogout}>Log Out
+                                </button>
+                            </div>
+                        )}
+
                     </div>
-
-                    {!isLoggedin ? (
-                        <div className="p-2 m-2 text-white">
-                            <p>Want to save your searches?</p>
-                            <p>
-                                <Link className="text-blue-300" to="/login">
-                                    SIGN UP
-                                </Link>
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="p-2 m-2 text-white ">
-                            <h3 className="text-grey">Save Your Data</h3>
-                            <button
-                                onClick={handleSaveData}
-                                className="p-2 bg-blue-500 text-white rounded-md cursor-pointer"
-                            >
-                                Save File to Firestore
-                            </button>
-                            <button className="p-2 ml-4 bg-blue-500 text-white rounded-md cursor-pointer"
-                                    onClick={handleLogout}>Log Out
-                            </button>
-                        </div>
-                    )}
                 </div>
-
+                {isLoggedin ?
+                    <div className="flex items-center mt-4">
+                        <SavedData userId={usid} refresh={refresh} setRefresh={setRefresh}/>
+                    </div> : null}
             </div>
-            {isLoggedin ?
-                <div className="flex items-center mt-4">
-                    <SavedData userId={usid} refresh={refresh} setRefresh={setRefresh} />
-                </div>: null}
+
+            <div className=" w-[40%] h-screen bg-cover bg-center font-montserrat overflow-x-hidden">
+                <Earth/>
+            </div>
         </div>
 
     );

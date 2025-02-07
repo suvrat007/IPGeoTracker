@@ -10,7 +10,7 @@ const DisplayUserFiles = ({trigger}) =>{
     const handleFileClick = useHandleFileClick(userId);
 
     return(
-        <div className="w-full justify-start ">
+        <div className="w-full justify-start backdrop-blur-sm">
             {fetchedData.length > 0 ? (
                 <div className="p-2 flex flex-row flex-wrap border-2 rounded-xl ">
                     <h1 className="text-lg">Saved Files:</h1>

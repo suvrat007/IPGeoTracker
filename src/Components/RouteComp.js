@@ -4,6 +4,8 @@ import {useEffect} from "react";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "../Utils/firebaseConfig";
 import {loggedIn} from "../Utils/loggedinSlice";
+import Body from "./Body";
+import Spline from "@splinetool/react-spline";
 
 const RouteComp = () =>{
     const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const RouteComp = () =>{
         return () => unsubscribe();
     }, [dispatch, navigate]);
     return (
-        <div>
+        <div >
             <Outlet/>
         </div>
     )

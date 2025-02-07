@@ -54,7 +54,7 @@ const Map = () =>{
 
     return (
         <div>
-            <div className="z-10 absolute">
+            <div className="">
                 <MapWithPins points={points}/>
             </div>
             <div

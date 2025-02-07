@@ -68,7 +68,7 @@ const Login = () => {
 
     return (
         <div className="relative flex justify-center top-[4rem]">
-            <div className="w-4/12 backdrop-blur">
+            <div className="w-4/12 backdrop-blur-xl">
                 <form className="flex flex-col border-2 bg-opacity-100 p-10 rounded-xl ">
 
                     <h1 className="font-bold text-3xl py-3 my-2 text-white">{isSignInForm ? "Log In" : "Sign Up"}</h1>
@@ -93,7 +93,7 @@ const Login = () => {
 
                     <button type="submit"
                             onClick={handleButtonClick}
-                            className="p-3 my-3 w-full bg-red-700 text-white rounded-lg">{isSignInForm ? "Log In" : "Sign Up"
+                            className="p-3 my-3 w-full bg-gradient-to-tr from-blue-700 from-0% to-violet-700 to-100% text-white rounded-lg">{isSignInForm ? "Log In" : "Sign Up"
                     }</button>
 
                     {!isSignInForm &&
