@@ -38,21 +38,24 @@ const App= ()=> {
   return (
       <Provider store={store}>
           <div
-              className="relative w-screen h-screen bg-cover bg-center font-montserrat"
+              className="relative flex flex-row w-screen h-screen bg-cover bg-center font-montserrat overflow-x-hidden"
               style={{ backgroundImage: "url('https://images.hdqwalls.com/download/space-stars-purple-sky-3n-1920x1080.jpg')" }}
           >
+              {/* Foreground Content */}
+              <div className=" w-full h-full items-center">
+                  <RouterProvider router={appRouter}/>
+              </div>
+
               {/* Background Spline */}
-              <div className="absolute inset-0 w-full h-full flex justify-center items-center">
-                  <div className="w-full h-full md:w-[90%] md:h-[90%] lg:w-[80%] lg:h-[80%]">
+              <div className="inset-0 w-full h-full flex justify-center items-center">
+                  <div className="right-0 w-full h-full md:w-[100%] md:h-[90%] lg:w-[95%] lg:h-[100%] ">
                       <Spline scene="https://prod.spline.design/xppCBxhIhqTjTGX7/scene.splinecode"/>
+                      {/*<Spline scene="https://prod.spline.design/cUhdOzs9Q93Y2UJz/scene.splinecode" />*/}
                   </div>
               </div>
 
 
-              {/* Foreground Content */}
-              <div className="relative z-10 w-full h-full items-center">
-                  <RouterProvider router={appRouter}/>
-              </div>
+
           </div>
       </Provider>
 

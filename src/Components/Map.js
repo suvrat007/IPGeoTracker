@@ -54,7 +54,7 @@ const Map = () =>{
 
     return (
         <div>
-            <div>
+            <div className="z-10 absolute">
                 <MapWithPins points={points}/>
             </div>
             <div
@@ -80,7 +80,6 @@ const Map = () =>{
                 {/*<DisplayUserFiles />*/}
 
             </div>
-
 
         </div>
 

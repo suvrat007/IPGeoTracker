@@ -83,38 +83,40 @@ const Body = () => {
     }
 
     const handleNoInputMapping = () => {
-        toast("No input mapping!");
+        toast("No input for mapping!");
     }
 
     const checker = useSelector((state) => state.data.dataList);
 
     return (
-        <div>
+        <div className="ml-10">
             <div className="flex flex-col items-center">
-                <div className="m-14 mt-20 flex flex-col text-white text-center text-lg items-center w-[50%] backdrop-blur-[3px] p-4 border-2 rounded-xl">
+                <div className=" mt-20 flex flex-col text-white text-center text-lg items-center w-[45rem] backdrop-blur-[3px] p-4 border-2 rounded-xl">
 
                     <div className="m-2 p-2 text-4xl font-bold ">
                         <h1>Want to know where your request travels?</h1>
                     </div>
 
                     <div className="flex flex-col text-center">
-                        <div className="relative flex flex-row items-center">
-                            <input
-                                type="file"
-                                accept=".json"
-                                onChange={handleFileChange}
-                                onClick={() => {
-                                    dispatch(emptyAddress());
-                                    dispatch(deleteCoordinates());
-                                    dispatch(deletePathPair());
-                                }}
-                                className="p-2"
-                            />
+                        <div className="flex flex-row items-center justify-between">
+                            <div className="w-1/3">
+                                <input
+                                    type="file"
+                                    accept=".json"
+                                    onChange={handleFileChange}
+                                    onClick={() => {
+                                        dispatch(emptyAddress());
+                                        dispatch(deleteCoordinates());
+                                        dispatch(deletePathPair());
+                                    }}
+                                    className="p-2 cursor-pointer "
+                                />
+                            </div>
 
-                            {(checker.length!=0) ?
-                                <div className="flex flex-row justify-center">
+                            {(checker.length != 0) ?
+                                <div className="flex flex-row justify-between text-lg">
                                     <Link to="/map">
-                                        <button className="border-2 text-black bg-white p-2 m-2 mr-5 rounded-lg"
+                                        <button className="text-black bg-white p-2 m-2 rounded-lg"
                                                 onClick={() => {
                                                     dispatch(deleteCoordinates());
                                                 }}>
@@ -122,41 +124,44 @@ const Body = () => {
                                         </button>
                                     </Link>
                                     <Link to="/mapPath">
-                                        <button className="border-2 text-black bg-white p-2 m-2 rounded-lg"
+                                        <button className="text-black bg-white p-2 m-2 rounded-lg"
                                                 onClick={() => {
                                                     dispatch(deletePathPair());
                                                 }}>
                                             Map with path
                                         </button>
                                     </Link>
-                        </div> : <div className="flex flex-row justify-center">
-                            <button className="border-2 text-black bg-gray-200 p-2 m-2 mr-5 rounded-lg "
-                                    onClick={() => {
-                                        handleNoInputMapping();
-                                    }}>
-                                Map with only pins
-                            </button>
-                            <button className="border-2 text-black bg-gray-200 p-2 m-2 rounded-lg"
-                                    onClick={
-                                        handleNoInputMapping
-                                    }>
-                                Map with path
-                                <ToastContainer
-                                    position="top-left"
-                                    autoClose={3000}
-                                    limit={10}
-                                    hideProgressBar={false}
-                                    newestOnTop={false}
-                                    closeOnClick
-                                    rtl={false}
-                                    pauseOnFocusLoss
-                                    draggable={false}
-                                    pauseOnHover={false}
-                                    theme="dark"
-                                    transition={Slide}
-                                />
-                            </button>
-                        </div>}
+                                </div>
+                                :
+                                <div className="flex flex-row  justify-between">
+                                    <button className="text-black bg-gray-400 p-2 m-2 rounded-lg "
+                                            onClick={() => {
+                                                handleNoInputMapping();
+                                            }}>
+                                        Map with only pins
+                                    </button>
+                                    <button className="text-black bg-gray-400 p-2 m-2 rounded-lg"
+                                            onClick={
+                                                handleNoInputMapping
+                                            }>
+                                        Map with path
+                                        <ToastContainer
+                                            position="top-left"
+                                            autoClose={3000}
+                                            limit={10}
+                                            hideProgressBar={false}
+                                            newestOnTop={false}
+                                            closeOnClick
+                                            rtl={false}
+                                            pauseOnFocusLoss
+                                            draggable={false}
+                                            pauseOnHover={false}
+                                            theme="dark"
+                                            transition={Slide}
+                                        />
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </div>
 
