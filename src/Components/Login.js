@@ -57,7 +57,7 @@ const Login = () => {
             } else if (error.code === "auth/email-already-in-use") {
                 setErrorMessage("This email is already in use." );
             } else {
-                setErrorMessage(error.message);
+                setErrorMessage(error.message );
             }
         }
     };
