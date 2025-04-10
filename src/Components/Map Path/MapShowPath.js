@@ -11,43 +11,20 @@ const DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const MapShowPath = ({ points }) => {
+const MapShowPath = ({ points , coordinatesArray}) => {
     const defaultPosition = [28.6139, 77.2090]; // Center position (Delhi, India)
 
-    const uniquePoints = new Set()
-    // Add unique coordinates to the set
-    points
-        .filter(
-            (point) =>
-                (point[0]?.location?.latitude && point[0]?.location?.longitude) ||
-                (point[1]?.location?.latitude && point[1]?.location?.longitude)
-        )
-        .forEach((point) => {
-            if (point[0]?.location?.latitude && point[0]?.location?.longitude) {
-                uniquePoints.add(JSON.stringify([point[0].location.latitude, point[0].location.longitude]));
-            }
-            if (point[1]?.location?.latitude && point[1]?.location?.longitude) {
-                uniquePoints.add(JSON.stringify([point[1].location.latitude, point[1].location.longitude]));
-            }
-        });
-
-    // Convert Set to an array of parsed coordinates
-    const coordinatesArray = Array.from(uniquePoints).map((coord) => JSON.parse(coord));
-
     return (
-        <div className="">
+
             <MapContainer
                 center={defaultPosition}
                 zoom={3}
-                minZoom={3}
-                maxZoom={10}
+                minZoom={2}
+                maxZoom={12}
                 worldCopyJump={true}
-                maxBounds={[
-                    [-90, -180],
-                    [90, 180],
-                ]}
+                maxBounds={[[-90, -180], [90, 180]]}
                 maxBoundsViscosity={1.0}
-                style={{width: "80%", height: "100vh"}}
+                style={{ width: "100%", height: "100%" }}
 
             >
                 <TileLayer
@@ -95,7 +72,7 @@ const MapShowPath = ({ points }) => {
 
 
             </MapContainer>
-        </div>
+
 
     );
 };

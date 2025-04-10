@@ -2,7 +2,7 @@ import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import useFetchCollection from "../hooks/useFetchCollection";
 import useHandleFileClick from "../hooks/useHandleFileClick";
-import {updateToggle} from "../Utils/dataSlice";
+import {updateToggle} from "./Redux/dataSlice";
 
 const DisplayUserFiles = ({trigger}) =>{
     const userId = useSelector(store=> store.login.uid);
@@ -12,7 +12,7 @@ const DisplayUserFiles = ({trigger}) =>{
     return(
         <div className="w-full justify-start backdrop-blur-sm">
             {fetchedData.length > 0 ? (
-                <div className="p-2 flex flex-row flex-wrap border-2 rounded-xl ">
+                <div className="p-2 flex flex-row flex-wrap border-2">
                     <h1 className="text-lg">Saved Files:</h1>
                     {fetchedData.map((id) => (
                         <p

@@ -20,8 +20,11 @@ const useFetchCollection = (userId,refresh) => {
                 if (snapshot.empty) {
                     setData([]); // No files found
                 } else {
-                    const ids = snapshot.docs.map((doc) => doc.id);
-                    setData(ids);
+                    const documents = snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                    }));
+                    setData(documents);
                 }
             } catch (err) {
                 console.error("Error fetching file data:", err);
@@ -33,6 +36,8 @@ const useFetchCollection = (userId,refresh) => {
 
         fetchCollection();
     }, [userId,refresh]);
+
+    console.log(data);
 
     return { data, loading, error };
 };

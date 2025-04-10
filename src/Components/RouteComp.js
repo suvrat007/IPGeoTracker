@@ -3,9 +3,10 @@ import {useDispatch} from "react-redux";
 import {useEffect} from "react";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "../Utils/firebaseConfig";
-import {loggedIn} from "../Utils/loggedinSlice";
-import Body from "./Body";
+import {loggedIn} from "../Utils/Redux/loggedinSlice";
+import Body from "./HomePage/Body";
 import Spline from "@splinetool/react-spline";
+import NavBar from "./NavBar/NavBar";
 
 const RouteComp = () =>{
     const dispatch = useDispatch();
@@ -21,9 +22,15 @@ const RouteComp = () =>{
         return () => unsubscribe();
     }, [dispatch, navigate]);
     return (
-        <div >
-            <Outlet/>
-        </div>
+        <>
+            <div className={'w-[93%] m-auto'}>
+                <div className="absolute flex flex-row top-0 left-0 bg-black w-full z-50">
+                    <NavBar/>
+                </div>
+                <Outlet/>
+            </div>
+        </>
+
     )
 }
 export default RouteComp;

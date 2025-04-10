@@ -1,8 +1,8 @@
 import {doc, getDoc} from "firebase/firestore";
 import {firestore} from "../Utils/firebaseConfig";
-import {addAddress, emptyAddress, updateToggle} from "../Utils/dataSlice";
-import { deleteCoordinates } from "../Utils/justPinsSlice";
-import { deletePathPair } from "../Utils/locationSlice";
+import {addAddress, emptyAddress, updateToggle} from "../Utils/Redux/dataSlice";
+import { deleteCoordinates } from "../Utils/Redux/justPinsSlice";
+import { deletePathPair } from "../Utils/Redux/locationSlice";
 import { useDispatch } from "react-redux";
 
 const useHandleFileClick = (userId) => {
@@ -18,7 +18,6 @@ const useHandleFileClick = (userId) => {
                     dispatch(deleteCoordinates());
                     dispatch(deletePathPair());
                     data.forEach((item) => dispatch(addAddress(item))); // Add each address to Redux
-
                 }
             } else {
                 console.log("No such document!");

@@ -25,5 +25,5 @@ yarn-error.log*
 .env
 
 /src/Utils/test7.json
-/src/Utils/test6.json
-/src/Utils/test5.json
+/src/Utils/DemoData/test6.json
+/src/Utils/DemoData/test5.json

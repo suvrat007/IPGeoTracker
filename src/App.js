@@ -1,37 +1,62 @@
 import './App.css';
 import {Provider, useDispatch} from "react-redux";
-import store from "./Utils/store";
+import store from "./Utils/Redux/store";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Body from "./Components/Body";
-import Map from "./Components/Map";
-import MapPath from "./Components/MapPath";
-import Login from "./Components/Login";
+import Body from "./Components/HomePage/Body";
+import Map from "./Components/Map Pins/Map";
+import MapPath from "./Components/Map Path/MapPath";
+import Home from "./Components/HomePage/Home";
+import Login from "./Components/Authentication/Login";
 import RouteComp from "./Components/RouteComp";
 import Spline from '@splinetool/react-spline';
+import SignUp from "./Components/Authentication/SignUp";
+import ProfilePage from "./Components/ProfilePage/ProfilePage";
+import ProtectedRoute from "./ProtectedRoute";
+import NavBar from "./Components/NavBar/NavBar";
 
 const appRouter = createBrowserRouter([
     {
         path: "/",
         element: <RouteComp />,
-        children:[
+        children: [
             {
-                path:"/",
-                element:<Body/>,
+                path: "/",
+                element: <Home />,
             },
             {
-                path: "/login",
-                element:<Login/>
-            },{
                 path: "/map",
-                element: <Map />,
-            },{
+                element: (
+                    <ProtectedRoute>
+                        <Map />
+                    </ProtectedRoute>
+                ),
+            },
+            {
                 path: "/mapPath",
-                element: <MapPath />,
-            }
-        ]
-    }
-
-
+                element: (
+                    <ProtectedRoute>
+                        <MapPath />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "/profile",
+                element: (
+                    <ProtectedRoute>
+                        <ProfilePage />
+                    </ProtectedRoute>
+                ),
+            },
+        ],
+    },
+    {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/signup",
+        element: <SignUp />,
+    },
 ]);
 
 const App= ()=> {
@@ -59,9 +84,9 @@ const App= ()=> {
       //
       //     </div>
       // </Provider>
+
       <Provider store={store}>
-          <div className=" w-full h-[100vh] "
-               style={{backgroundImage: "url('https://images.hdqwalls.com/download/space-stars-purple-sky-3n-1920x1080.jpg')"}}>
+          <div className="bg-black h-full text-white">
               <RouterProvider router={appRouter}/>
           </div>
       </Provider>
