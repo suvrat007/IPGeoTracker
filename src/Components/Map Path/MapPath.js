@@ -19,6 +19,7 @@ const MapPath = () => {
             const response = await fetch(
                 `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=${process.env.REACT_APP_GEOAPIFY_API_KEY}`
             );
+            // console.log(response);
             return await response.json();
         } catch (error) {
             console.error("Error fetching IP data:", error);
@@ -39,6 +40,8 @@ const MapPath = () => {
                 dispatch(addPathPair([a, b]));
             }
         });
+
+
     }, []);
 
     const handleReRender = () => {
@@ -69,7 +72,7 @@ const MapPath = () => {
     return (
         <div className="flex bg-black h-screen">
 
-            <div className="w-[80%] h-[91vh] mt-[4.5%] -ml-[1.8em]">
+            <div className="w-[76%] h-[90vh]  mt-[4.15%]">
                 <MapShowPath points={points} coordinatesArray={coordinatesArray} />
             </div>
 

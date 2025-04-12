@@ -2,13 +2,44 @@ import React from 'react';
 import {auth} from "../../Utils/firebaseConfig";
 import {logout} from "../../Utils/Redux/loggedinSlice";
 import {useDispatch} from "react-redux";
+import { doc, getDoc } from 'firebase/firestore';
+import {firestore } from '../../Utils/firebaseConfig';
+import { useEffect, useState } from 'react';
+
+
 
 const UserProfile = () => {
     const dispatch = useDispatch();
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const currentUser = auth.currentUser;
+                if (!currentUser) return;
+
+                const userDocRef = doc(firestore, "users", currentUser.uid);
+                const userSnap = await getDoc(userDocRef);
+
+                if (userSnap.exists()) {
+                    setUserData(userSnap.data());
+                } else {
+                    console.log("No user document found!");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
     const handleLogout=()=>{
         auth.signOut();
         dispatch(logout());
     }
+
+
     return (
 
         <div className="bg-[#453FAC] min-h-screen p-12 text-white relative">
@@ -37,9 +68,10 @@ const UserProfile = () => {
                     </svg>
                 </div>
                 <div className="flex flex-col justify-between gap-6">
+
                     <div>
-                        <h1 className="text-3xl font-bold">Emma Stones</h1>
-                        <h2 className="text-lg text-gray-300">@emmajhinguri2311</h2>
+                        <h1 className="text-3xl font-bold">{userData?.name || ""}</h1>
+                            <h2 className="text-lg text-gray-300">@{userData?.userName || ""}</h2>
                     </div>
                     <div className="flex space-x-4">
                         <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200">
@@ -59,7 +91,7 @@ const UserProfile = () => {
                     <label className="block text-sm font-medium text-gray-200">First Name</label>
                     <input
                         type="text"
-                        value="Emma"
+                        value={userData?.name?.split(" ")[0] || ""}
                         readOnly
                         className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
                     />
@@ -68,34 +100,26 @@ const UserProfile = () => {
                     <label className="block text-sm font-medium text-gray-200">Middle name + Last Name</label>
                     <input
                         type="text"
-                        value="Stones"
+                        value={userData?.name?.split(" ").slice(1).join(" ") || ""}
                         readOnly
                         className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
                     />
                 </div>
                 <div className="border border-gray-300 p-3 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-200">Username</label>
+                    <label className="block text-sm font-medium text-gray-200">Email Id</label>
                     <input
                         type="text"
-                        value="emmajhinguri2311"
+                        value={userData?.email?.split("@")[0] || ""}
                         readOnly
                         className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
                     />
                 </div>
-                <div className="border border-gray-300 p-3 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-200">Password</label>
-                    <input
-                        type="password"
-                        value="S87adho||)* kad"
-                        readOnly
-                        className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
-                    />
-                </div>
+
             </div>
 
             {/* Footer with PacketLens Text */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center">
-                <h1 className="text-[8.75rem] font-bold text-black">PacketLENS</h1>
+                <h1 className="text-[8.5rem] font-bold text-black">PacketLENS</h1>
             </div>
         </div>
     );

@@ -4,11 +4,14 @@ import { auth } from '../../Utils/firebaseConfig';
 import { checkValidateData } from '../../Utils/Validate';
 import { useDispatch } from 'react-redux';
 import { switchLogin } from '../../Utils/Redux/loggedinSlice';
-import { useNavigate } from 'react-router';
+import {data, useNavigate} from 'react-router';
 import { FiLock, FiMail, FiUser } from "react-icons/fi"; // Added FiUser for name field
+import { doc, setDoc } from 'firebase/firestore';
+import { firestore } from '../../Utils/firebaseConfig';
 
 const SignUp = () => {
     const [name, setName] = useState("");
+    const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -37,7 +40,17 @@ const SignUp = () => {
 
         try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
-            dispatch(switchLogin(userCred.user.uid));
+            const user = userCred.user;
+
+            // Save user details to Firestore
+            await setDoc(doc(firestore, "users", user.uid), {
+                name: name,
+                email: email,
+                userName:userName,
+                createdAt: new Date(),
+            });
+
+            dispatch(switchLogin(user.uid));
             navigate('/');
         } catch (error) {
             if (error.code === "auth/email-already-in-use") {
@@ -152,8 +165,9 @@ const SignUp = () => {
                         <h1 className="text-2xl text-white">Join us to find packets around the globe</h1>
                     </div>
                     <div className={'flex flex-col justify-center text-xl items-center w-full'}>
-                        <div className="flex items-center border-2 w-full m-4 border-gray-300 rounded px-3 py-2 bg-black text-white">
-                            <FiUser className="text-gray-500 mr-2" size={20} />
+                        <div
+                            className="flex items-center border-2 w-full m-4 border-gray-300 rounded px-3 py-2 bg-black text-white">
+                            <FiUser className="text-gray-500 mr-2" size={20}/>
                             <input
                                 type="text"
                                 value={name}
@@ -162,8 +176,21 @@ const SignUp = () => {
                                 className="bg-black w-full focus:outline-none ml-10"
                             />
                         </div>
-                        <div className="flex items-center border-2 w-full m-4 border-gray-300 rounded px-3 py-2 bg-black text-white">
-                            <FiMail className="text-gray-500 mr-2" size={20} />
+
+                        <div
+                            className="flex items-center border-2 w-full m-4 border-gray-300 rounded px-3 py-2 bg-black text-white">
+                            <FiUser className="text-gray-500 mr-2" size={20}/>
+                            <input
+                                type="text"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                placeholder="@username"
+                                className="bg-black w-full focus:outline-none ml-10"
+                            />
+                        </div>
+                        <div
+                            className="flex items-center border-2 w-full m-4 border-gray-300 rounded px-3 py-2 bg-black text-white">
+                            <FiMail className="text-gray-500 mr-2" size={20}/>
                             <input
                                 type="email"
                                 value={email}
@@ -172,8 +199,9 @@ const SignUp = () => {
                                 className="bg-black w-full focus:outline-none ml-10"
                             />
                         </div>
-                        <div className="flex items-center border-2 border-gray-300 w-full m-4 rounded px-3 py-2 bg-black text-white">
-                            <FiLock className="text-gray-500 mr-2" size={20} />
+                        <div
+                            className="flex items-center border-2 border-gray-300 w-full m-4 rounded px-3 py-2 bg-black text-white">
+                            <FiLock className="text-gray-500 mr-2" size={20}/>
                             <input
                                 type="password"
                                 value={password}
@@ -190,7 +218,8 @@ const SignUp = () => {
                     >
                         Sign Up
                     </button>
-                    <p className="my-3 text-white cursor-pointer hover:underline hover:text-blue-800" onClick={toggleForm}>
+                    <p className="my-3 text-white cursor-pointer hover:underline hover:text-blue-800"
+                       onClick={toggleForm}>
                         Already a user? Log In here!
                     </p>
                 </form>

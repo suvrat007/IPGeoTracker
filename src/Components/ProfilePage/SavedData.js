@@ -10,13 +10,13 @@ import React, {useState} from "react";
 import {useDispatch} from "react-redux";
 
 const SavedData = ({ userId }) => {
-
-    const {  data, loading, error } = useFetchCollection(userId);
+    const [refresh, setRefresh] = useState(false);
+    const {  data, loading, error } = useFetchCollection(userId,refresh);
     const handleFileClick = useHandleFileClick(userId);
 
     const dispatch = useDispatch();
 
-    const [refresh, setRefresh] = useState(false);
+
     // console.log(handleFileClick());
 
     if (loading) {
@@ -32,12 +32,12 @@ const SavedData = ({ userId }) => {
     }
 
     return (
-        <div className="w-[97%] m-auto mt-5">
+        <div className="w-[98%] m-auto mt-5">
             <div className={'flex flex-wrap '}>
                 {data ? (
-                    <div className="flex flex-row flex-wrap p-2 justify-between ">
+                    <div className="flex flex-row flex-wrap p-2 justify-between gap-4 transition">
                         {data.map((item) => (
-                            <div className={'p-2 w-[49%] mb-4 bg-[#453FAC]'}>
+                            <div className={'p-2 bg-[#453FAC]'}>
                                 <div className="flex items-center ">
                                     <HiOutlineDocument size={60} className="text-xl text-white mr-1 "/>
                                     <div>
@@ -45,7 +45,7 @@ const SavedData = ({ userId }) => {
                                         <p className={'text-2xl'}>{item.id}</p>
                                     </div>
                                 </div>
-                                <div className="flex justify-between p-2">
+                                <div className="flex justify-between p-2 gap-2">
                                     <Link to="/mapPath">
                                         <button
                                             onClick={() => {
@@ -89,7 +89,7 @@ const SavedData = ({ userId }) => {
                                     </Link>
 
                                     <button onClick={() => deleteElement(item.id)}
-                                            className="w-[1.7em] ml-3">
+                                            className="w-[1.5em] ml-2">
                                         <img
                                             src="https://img.icons8.com/?size=100&id=11705&format=png&color=FFFFFF"/>
                                     </button>

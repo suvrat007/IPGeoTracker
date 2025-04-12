@@ -2,14 +2,17 @@ import { Link } from "react-router-dom";
 import { emptyAddress } from "../../Utils/Redux/dataSlice";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
 import { deletePathPair } from "../../Utils/Redux/locationSlice";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { useDispatch } from "react-redux";
 import { HiOutlineDocument } from "react-icons/hi";
 import FileUpload from "./FileUpload";
+import {auth, firestore} from "../../Utils/firebaseConfig";
+import {doc, getDoc} from "firebase/firestore";
 
 const Header = () => {
     const dispatch = useDispatch();
     const [file, setFile] = useState(""); // State to hold the filename
+
 
     return (
         <div className="w-full bg-[#453FAC] ">
@@ -18,10 +21,10 @@ const Header = () => {
                     <HiOutlineDocument size={60} className="text-xl text-white mr-1 " />
                     <div>
                         <p className={'text-[.75rem]'}>CURRENT FILE</p>
-                        <p className={'text-2xl'}>FileName: {file || "No file selected"}</p>
+                        <p className={'text-2xl'}>FileName: { "No file selected"}</p>
                     </div>
                 </div>
-                <div className="flex justify-between p-1 ">
+                <div className="flex justify-between p-2 ">
                     <Link to="/mapPath">
                         <button
                             onClick={() => dispatch(deleteCoordinates())}

@@ -23,7 +23,7 @@ const RouteComp = () =>{
     }, [dispatch, navigate]);
     return (
         <>
-            <div className={'w-[93%] m-auto'}>
+            <div className={'w-100 m-auto'}>
                 <div className="absolute flex flex-row top-0 left-0 bg-black w-full z-50">
                     <NavBar/>
                 </div>

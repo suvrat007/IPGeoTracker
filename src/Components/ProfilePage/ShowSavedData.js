@@ -10,8 +10,8 @@ const ShowSavedData = () => {
         navigate('/')
     }
     return (
-        <div className=" h-screen">
-            <div className={'flex  p-4 justify-between gap-4'}>
+        <div className=" h-screen ">
+            <div className={'flex p-4 justify-between gap-4'}>
                 <div className="flex items-center bg-gray-900 rounded-[2em] rounded-bl-none w-3/5 px-4">
                     {/* Search Icon */}
                     <svg
@@ -54,6 +54,7 @@ const ShowSavedData = () => {
                         <FaTimes className="text-xl"/>
                     </button>
                 </div   >
+
                 <div
                     className={'w-2/5 flex items-center bg-gray-900 text-white rounded-[2em] rounded-bl-none  justify-between'}>
                     <h1

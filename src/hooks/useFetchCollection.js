@@ -37,7 +37,7 @@ const useFetchCollection = (userId,refresh) => {
         fetchCollection();
     }, [userId,refresh]);
 
-    console.log(data);
+    // console.log(data);
 
     return { data, loading, error };
 };

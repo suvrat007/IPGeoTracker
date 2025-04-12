@@ -43,7 +43,7 @@ const Map = () => {
     return (
         <div className="flex bg-black h-screen">
             {/* Map Section */}
-            <div className="w-[80%] h-[91vh] mt-[4.5%] -ml-[1.8em]">
+            <div className="w-[76%] h-[90vh]  mt-[4.15%]">
                 <MapWithPins points={points} />
             </div>
 

@@ -104,7 +104,7 @@ const Body = () => {
     return (
         <div className="relative w-full overflow-hidden  h-full">
 
-            <div className="relative z-10 flex items-center justify-between w-[1440px] h-[34em] top-[61px] bg-[linear-gradient(97.25deg,_#524CCE_32.1%,_#E38A63_51.39%,_#524BCE_98.5%)]">
+            <div className="relative z-10 flex items-center justify-between w-full h-[34em] top-[61px] bg-[linear-gradient(97.25deg,_#524CCE_32.1%,_#E38A63_51.39%,_#524BCE_98.5%)]">
                 {/*content*/}
                 <div className={' w-full flex flex-row justify-between relative -bottom-[4em] px-[2.5em]'}>
                     <div className="text-white text-left">
