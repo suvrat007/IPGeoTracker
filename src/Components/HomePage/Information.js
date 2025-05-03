@@ -8,15 +8,21 @@ const Information = () => {
             </div>
             <div className="flex flex-row justify-between border-b-2">
                 <div className={'p-10 w-[70%]'}>
-                    <h1 className={'text-4xl mb-4 font-bold'}>Unique tracing mechanism //</h1>
-                    <p className={'text-2xl'}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent posuere felis at tristique
-                        finibus. Phasellus sit amet accumsan libero. Nullam tincidunt tincidunt libero, et sollicitudin
-                        lectus laoreet id. Donec eu dapibus leo. Nam in dolor id mauris congue fermentum eget ut enim.
-                        Mauris ultricies lectus vel urna luctus dictum. Vivamus porta fringilla placerat. Integer
-                        vulputate vulputate tincidunt. Integer tristique quam id sem dictum vestibulum eu a nisi.
-
-                    </p>
+                    <h1 className={'text-4xl mb-4 font-bold'}>How to use //</h1>
+                    <div
+                        className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-lg leading-relaxed">
+                        <p>1. <span className="text-green-400">Capture Data with Wireshark:</span> Use Wireshark to
+                            monitor your network traffic. Start a capture session and let it run while your desired
+                            network activity takes place.</p>
+                        <p>2. <span className="text-green-400">Export as JSON:</span> After capturing, export the packet
+                            data in JSON format. In Wireshark, go to <span className="text-yellow-400">File &gt; Export Packet Dissections &gt; As JSON</span> and
+                            save the file.</p>
+                        <p>3. <span className="text-green-400">Upload JSON to PacketLens:</span> Open the PacketLens
+                            tool and upload your exported JSON file through the upload interface.</p>
+                        <p>4. <span className="text-green-400">View Mapped Data:</span> Once uploaded, PacketLens will
+                            process and map the packet data—visually presenting key details like source/destination IPs,
+                            ports, packet sizes, and other metadata for easy analysis.</p>
+                    </div>
                 </div>
 
                 <div className={'border-l-2 flex flex-col justify-center items-center w-[35%]'}>
@@ -54,22 +60,20 @@ const Information = () => {
             </div>
 
             <div className="flex flex-row justify-between border-b-2">
-                <div className={'border-r-2 flex flex-col justify-center items-center w-[35%]'}>
+                <div className={' flex flex-col justify-center items-center w-[35%] h-[25em]'}>
                     <img
                         src="https://media-hosting.imagekit.io/9a9f091cf5694797/screenshot_1744121591703.png?Expires=1838729592&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=xxBETx9lVCwb6PzAFNFM4b7to-Xw93tikNmcuooxczga~xXrC9M9n7bTHNFFg5EUWz8iC-YHhxzd4SYun0OUpTLELmP~SeN6k9J3VwdkpdwyhwidUzwXpCPB84c0dEsM2kptBs49u5yfkbZiigAhGKYOTB9uBJ2i5DyKQhtevI7Zsswg7I5NEA2a5hld4-AUn9V-dJm~VB6gPXkHghzjbpSPK~UAhDzXz-Buj4-ywBqvo4KrptZRRaGXKK12MeBOw6--JZmK669NqirVPgpWsvpJjluxnxMSqH7AhOShS8EP716GaBKbQb2lMGbCD69xjeY~-NVUYOT8mbcV~oBKFw__"
-                        className={'w-40%'}/>
+                        className={'w-40% h-full'}/>
                 </div>
-                <div className="p-10 w-[70%] text-right">
-                    <h1 className="text-4xl mb-4 font-bold">// Network Around Globe</h1>
-                    <p className="text-2xl">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent posuere felis at tristique
-                        finibus. Phasellus sit amet accumsan libero. Nullam tincidunt tincidunt libero, et
-                        sollicitudin
-                        lectus laoreet id. Donec eu dapibus leo. Nam in dolor id mauris congue fermentum eget ut
-                        enim.
-                        Mauris ultricies lectus vel urna luctus dictum. Vivamus porta fringilla placerat. Integer
-                        vulputate vulputate tincidunt. Integer tristique quam id sem dictum vestibulum eu a nisi.
-                    </p>
+                <div className="p-10 w-[70%] text-left border-l-2">
+                    <h1 className="text-4xl mb-4 font-bold">Network Around Globe //</h1>
+                    <div class="text-white p-4 rounded-2xl shadow-lg space-y-4 text-xl ">
+                        <p><span class="text-green-400">We take your packet data:</span> Once you upload your JSON file, PacketLens reads and parses all TCP packet information.</p>
+                        <p><span class="text-green-400">We analyze and filter:</span> Each packet is inspected for details like source and destination IPs, ports, and packet size to identify meaningful data points.</p>
+                        <p><span class="text-green-400">We search and locate:</span> Using IP geolocation, PacketLens finds the physical locations associated with destination IPs.</p>
+                        <p><span class="text-green-400">We plot on the map:</span> Finally, we visualize where your TCP requests have been sent from your device, giving you a clear global picture of your network activity.</p>
+                    </div>
+
                 </div>
 
             </div>

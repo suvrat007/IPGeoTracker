@@ -74,7 +74,7 @@ const UserProfile = () => {
                             <h2 className="text-lg text-gray-300">@{userData?.userName || ""}</h2>
                     </div>
                     <div className="flex space-x-4">
-                        <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200">
+                        <button className="bg-gray-500 text-white px-6 py-2 rounded-full">
                             Edit Profile
                         </button>
                         <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200"

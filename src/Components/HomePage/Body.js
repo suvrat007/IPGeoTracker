@@ -95,11 +95,11 @@ const Body = () => {
         dispatch(logout());
     }
 
-    const handleNoInputMapping = () => {
-        toast("No input for mapping!");
-    }
+    // const handleNoInputMapping = () => {
+    //     toast("No input for mapping!");
+    // }
 
-    const checker = useSelector((state) => state.data.dataList);
+    // const checker = useSelector((state) => state.data.dataList);
 
     return (
         <div className="relative w-full overflow-hidden  h-full">
