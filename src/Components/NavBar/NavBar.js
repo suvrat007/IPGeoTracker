@@ -84,7 +84,7 @@ const NavBar = () => {
                         {isLoggedIn ? (
                             <>
                                 <button onClick={handleLogout} className="bg-[#453FAC] px-6 py-3 rounded-full hover:bg-[#524CCE] transition text-lg">SignOut</button>
-                                <img src="https://www.svgrepo.com/show/335455/profile-default.svg" className="w-10 h-10 cursor-pointer" onClick={handleProfileClick} alt="Profile" />
+                                <p onClick={handleProfileClick}>Profile</p>
                             </>
                         ) : (
                             <>

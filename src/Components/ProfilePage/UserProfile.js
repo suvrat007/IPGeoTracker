@@ -6,8 +6,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import {firestore } from '../../Utils/firebaseConfig';
 import { useEffect, useState } from 'react';
 
-
-
 const UserProfile = () => {
     const dispatch = useDispatch();
     const [userData, setUserData] = useState(null);
@@ -39,18 +37,19 @@ const UserProfile = () => {
         dispatch(logout());
     }
 
-
     return (
-
-        <div className="bg-[#453FAC] min-h-screen p-12 text-white relative">
-            <div className="flex items-center space-x-6 mb-10">
-                <div className="w-32 h-32">
+        <div className="bg-[#453FAC] min-h-[65%] lg:h-full p-4 sm:p-6 md:p-8 lg:p-12 text-white relative">
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 mb-8 lg:mb-10">
+                {/* Avatar */}
+                <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex-shrink-0">
                     <svg
-                        width="124"
-                        height="124"
+                        width="100%"
+                        height="100%"
                         viewBox="0 0 124 124"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-full"
                     >
                         <rect width="124" height="124" rx="62" fill="#EADDFF" />
                         <path
@@ -65,55 +64,67 @@ const UserProfile = () => {
                         />
                     </svg>
                 </div>
-                <div className="flex flex-col justify-between gap-6">
 
-                    <div>
-                        <h1 className="text-3xl font-bold">{userData?.name || ""}</h1>
-                            <h2 className="text-lg text-gray-300">@{userData?.userName || ""}</h2>
+                {/* User Info */}
+                <div className="flex flex-col items-center sm:items-start justify-center gap-4 sm:gap-6 flex-1">
+                    <div className="text-center sm:text-left">
+                        <h1 className="text-2xl sm:text-3xl font-bold truncate max-w-full">
+                            {userData?.name || ""}
+                        </h1>
+                        <h2 className="text-base sm:text-lg text-gray-300 truncate max-w-full">
+                            @{userData?.userName || ""}
+                        </h2>
                     </div>
-                    <div className="flex space-x-4">
-                        <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200"
-                                onClick={handleLogout}>
+
+                    <div className="flex justify-center sm:justify-start">
+                        <button
+                            className="bg-black text-white px-4 sm:px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200 text-sm sm:text-base"
+                            onClick={handleLogout}
+                        >
                             Log Out
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col gap-6">
+            {/* Form Fields */}
+            <div className="flex flex-col gap-4 sm:gap-6 mb-20 lg:mb-32">
                 <div className="border border-gray-300 p-3 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-200">First Name</label>
+                    <label className="block text-sm font-medium text-gray-200 mb-1">First Name</label>
                     <input
                         type="text"
                         value={userData?.name?.split(" ")[0] || ""}
                         readOnly
-                        className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
+                        className="w-full bg-transparent text-white border-none focus:outline-none text-base sm:text-lg"
                     />
                 </div>
+
                 <div className="border border-gray-300 p-3 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-200">Middle name + Last Name</label>
+                    <label className="block text-sm font-medium text-gray-200 mb-1">Middle name + Last Name</label>
                     <input
                         type="text"
                         value={userData?.name?.split(" ").slice(1).join(" ") || ""}
                         readOnly
-                        className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
+                        className="w-full bg-transparent text-white border-none focus:outline-none text-base sm:text-lg"
                     />
                 </div>
+
                 <div className="border border-gray-300 p-3 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-200">Email Id</label>
+                    <label className="block text-sm font-medium text-gray-200 mb-1">Email Id</label>
                     <input
                         type="text"
                         value={userData?.email?.split("@")[0] || ""}
                         readOnly
-                        className="w-full bg-transparent text-white border-none focus:outline-none text-lg"
+                        className="w-full bg-transparent text-white border-none focus:outline-none text-base sm:text-lg"
                     />
                 </div>
-
             </div>
 
             {/* Footer with PacketLens Text */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center">
-                <h1 className="text-[8.5rem] font-bold text-black">PacketLENS</h1>
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 ">
+                <h1 className="text-[4em] md:text-7xl lg:text-8xl xl:text-[8.5rem]  font-bold text-black leading-none">
+                    PacketLENS
+                </h1>
             </div>
         </div>
     );

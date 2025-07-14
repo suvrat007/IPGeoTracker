@@ -3,14 +3,14 @@ import ShowSavedData from "./ShowSavedData";
 
 const ProfilePage = () => {
     return (
-        <div className="w-screen h-screen bg-black flex pt-12 overflow-hidden ">
-            <div className="w-[46%]">
+        <div className="md:h-[89.2vh] h-full bg-black flex flex-col lg:flex-row overflow-hidden">
+            <div className="w-full lg:w-[46%] flex-shrink-0">
                 <UserProfile/>
             </div>
-            <div className="w-[54%]">
+            <div className="w-full lg:w-[54%] flex-shrink-0">
                 <ShowSavedData/>
             </div>
         </div>
     )
 }
-export default ProfilePage
+export default ProfilePage;
