@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addAddress, emptyAddress } from "../../Utils/Redux/dataSlice";
-import { useEffect, useRef, useState } from "react";
+import { emptyAddress } from "../../Utils/Redux/dataSlice";
+import { useRef } from "react"; // Removed useState and useEffect
 import { auth, firestore } from "../../Utils/firebaseConfig";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
@@ -11,58 +11,35 @@ import { ToastContainer, toast } from "react-toastify";
 import { FiLogOut } from "react-icons/fi";
 import { FaSave } from "react-icons/fa";
 import { addFile } from "../../Utils/Redux/fileSlice";
+import { parseAndDispatchFile } from "./parseAndDispatchFile"
 import "react-toastify/dist/ReactToastify.css";
 
 const Body = () => {
     const dispatch = useDispatch();
-    const [inputData, setInputData] = useState([]);
     const isLoggedin = useSelector((state) => state.login.isLoggedin);
     const usid = useSelector((store) => store.login.uid);
-    const [fileName, setFileName] = useState("");
     const fileInputRef = useRef(null);
-    const coordinateList = useSelector((state) => state.data.dataList);
+    const coordinateList = useSelector((state) => state.data.dataList); // Access dataList
+    const fileName = useSelector((state) => state.fileName); // Access fileName from fileSlice
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const name = file.name.split(".")[0];
-            dispatch(addFile(name));
-            setFileName(name);
+            dispatch(addFile(name)); // Store file name in Redux
             const reader = new FileReader();
             reader.onload = (e) => {
-                try {
-                    const json = JSON.parse(e.target.result);
-                    setInputData(json);
-                } catch (error) {
-                    console.error("Error parsing JSON:", error);
-                }
+                parseAndDispatchFile(e.target.result, name, dispatch); // Parse and dispatch to Redux
             };
             reader.readAsText(file);
         }
     };
 
-    useEffect(() => {
-        if (!inputData.length) return;
-
-        const uniquePairs = new Set();
-        inputData.forEach((item) => {
-            const src = item?._source?.layers?.ip?.["ip.src"];
-            const dst = item?._source?.layers?.ip?.["ip.dst"];
-
-            if (src && dst) {
-                const pair = JSON.stringify([src, dst].sort());
-                if (!uniquePairs.has(pair)) {
-                    uniquePairs.add(pair);
-                    dispatch(addAddress({ src, dst }));
-                }
-            }
-        });
-    }, [inputData, dispatch]);
-
     const handleSvgClick = () => {
         dispatch(emptyAddress());
         dispatch(deleteCoordinates());
         dispatch(deletePathPair());
+        dispatch(addFile("")); // Clear file name in Redux
         fileInputRef.current.click();
     };
 
@@ -84,6 +61,15 @@ const Body = () => {
             });
         } catch (e) {
             console.error("Error saving to Firestore:", e);
+            toast.error("Failed to save data", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "dark",
+            });
         }
     };
 
@@ -95,7 +81,7 @@ const Body = () => {
     return (
         <div className="relative w-full min-h-[20rem] sm:min-h-[24rem] overflow-hidden">
             <ToastContainer />
-            <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-end w-full  mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 bg-[linear-gradient(97.25deg,_#524CCE_32.1%,_#E38A63_51.39%,_#524BCE_98.5%)]">
+            <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-end w-full mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 bg-[linear-gradient(97.25deg,_#524CCE_32.1%,_#E38A63_51.39%,_#524BCE_98.5%)]">
                 <div className="flex flex-col md:flex-row justify-between w-full relative -bottom-4 sm:-bottom-6 md:-bottom-8">
                     {/* Left Text */}
                     <div className="text-white text-left mb-6 md:mb-0 md:w-1/2">
@@ -121,7 +107,9 @@ const Body = () => {
                                 ref={fileInputRef}
                                 className="hidden"
                             />
-                            <p className="text-xs sm:text-sm md:text-base truncate">{fileName}</p>
+                            <p className="text-xs sm:text-sm md:text-base truncate">
+                                {fileName || "No file selected"}
+                            </p>
                             <button
                                 onClick={handleSvgClick}
                                 className="p-2 hover:bg-white/10 rounded-full transition"
@@ -147,10 +135,10 @@ const Body = () => {
                         <div className="flex flex-wrap gap-2 justify-end">
                             <Link to="/mapPath">
                                 <button
-                                    disabled={!fileName}
+                                    disabled={!fileName || !coordinateList?.length}
                                     onClick={() => dispatch(deleteCoordinates())}
                                     className={`flex items-center gap-2 px-3 py-2 border-2 rounded-full text-xs sm:text-sm font-medium transition ${
-                                        fileName
+                                        fileName && coordinateList?.length
                                             ? "bg-black text-white border-white hover:scale-105"
                                             : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                     }`}
@@ -161,10 +149,10 @@ const Body = () => {
 
                             <Link to="/map">
                                 <button
-                                    disabled={!fileName}
+                                    disabled={!fileName || !coordinateList?.length}
                                     onClick={() => dispatch(deletePathPair())}
                                     className={`flex items-center gap-2 px-3 py-2 border-2 rounded-full text-xs sm:text-sm font-medium transition ${
-                                        fileName
+                                        fileName && coordinateList?.length
                                             ? "bg-black text-white border-white hover:scale-105"
                                             : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                     }`}
@@ -176,10 +164,10 @@ const Body = () => {
                             {isLoggedin && (
                                 <>
                                     <button
-                                        disabled={!fileName}
+                                        disabled={!fileName || !coordinateList?.length}
                                         onClick={handleSaveData}
                                         className={`flex items-center gap-2 px-3 py-2 border-2 rounded-full text-xs sm:text-sm font-medium transition ${
-                                            fileName
+                                            fileName && coordinateList?.length
                                                 ? "bg-black text-white border-white hover:scale-105"
                                                 : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                         }`}

@@ -39,7 +39,7 @@ const NavBar = () => {
 
     return (
         <div className="bg-black w-full z-50 sticky top-0">
-            <div className="flex justify-between items-center text-white px-4 sm:px-6 md:px-10 py-5 max-w-[1440px] mx-auto">
+            <div className="flex justify-between items-center text-white px-4 sm:px-6 md:px-10 md:py-3 py-5 max-w-[1440px] mx-auto">
                 <div className="flex items-center">
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleClick} className="cursor-pointer">
                         <circle cx="14" cy="14" r="14" fill="url(#paint0_linear_774_3855)" />

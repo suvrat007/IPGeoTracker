@@ -1,7 +1,40 @@
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { emptyAddress } from "../../Utils/Redux/dataSlice";
+import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
+import { deletePathPair } from "../../Utils/Redux/locationSlice";
+import { addFile } from "../../Utils/Redux/fileSlice";
+import { parseAndDispatchFile } from "./parseAndDispatchFile";
 
 const Information = () => {
+    const dispatch = useDispatch();
+    const [inputData, setInputData] = useState([]);
+    const [fileName, setFileName] = useState("");
+
+    const handleDemoFileClick = async (file) => {
+        try {
+            // Clear existing data
+            dispatch(emptyAddress());
+            dispatch(deleteCoordinates());
+            dispatch(deletePathPair());
+            dispatch(addFile(file)); // Set file name in Redux
+            setFileName(file);
+
+            // Fetch the JSON file
+            const response = await fetch(`/Utils/DemoData/${file}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${file}`);
+            }
+            const fileData = await response.text();
+            const parsedData = parseAndDispatchFile(fileData, file, dispatch);
+            setInputData(parsedData);
+        } catch (error) {
+            console.error(`Error fetching or parsing ${file}:`, error);
+        }
+    };
+
     return (
         <div className="w-full">
             <div className="text-base sm:text-lg border-b-2 p-4 sm:p-6">
@@ -15,10 +48,9 @@ const Information = () => {
                         "test5.json",
                         "test6.json",
                     ].map((file, idx) => (
-                        <a
+                        <button
                             key={idx}
-                            href={`/Utils/DemoData/${file}`}
-                            download
+                            onClick={() => handleDemoFileClick(file)}
                             className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl bg-[#1a1a1a] hover:bg-[#2a2a2a] border border-white/10 transition duration-200 shadow-md"
                         >
                             <svg
@@ -36,34 +68,34 @@ const Information = () => {
                                 />
                             </svg>
                             <div className="text-white text-xs sm:text-sm font-medium">{file}</div>
-                        </a>
+                        </button>
                     ))}
                 </div>
                 <p className="ml-4 sm:ml-6">WHAT WE PROVIDE?</p>
             </div>
 
+            {/* Rest of the component remains unchanged */}
             <div className="flex flex-col md:flex-row justify-between border-b-2">
                 <div className="p-6 sm:p-8 md:p-10 md:w-[60%]">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl mb-4 font-bold">How to use //</h1>
                     <div className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-sm sm:text-base md:text-lg leading-relaxed">
                         <p>
-                            1. <span className="text-green-400">Capture Data with Wireshark:</span> Use Wireshark to
-                            monitor your network traffic. Start a capture session and let it run while your desired
-                            network activity takes place.
+                            1. <span className="text-green-400">Capture Data with Wireshark:</span> Use Wireshark to monitor your
+                            network traffic. Start a capture session and let it run while your desired network activity takes place.
                         </p>
                         <p>
-                            2. <span className="text-green-400">Export as JSON:</span> After capturing, export the packet
-                            data in JSON format. In Wireshark, go to <span className="text-yellow-400">File > Export Packet Dissections > As JSON</span> and
+                            2. <span className="text-green-400">Export as JSON:</span> After capturing, export the packet data in JSON
+                            format. In Wireshark, go to <span className="text-yellow-400">File > Export Packet Dissections > As JSON</span> and
                             save the file.
                         </p>
                         <p>
-                            3. <span className="text-green-400">Upload JSON to PacketLens:</span> Open the PacketLens
-                            tool and upload your exported JSON file through the upload interface.
+                            3. <span className="text-green-400">Upload JSON to PacketLens:</span> Open the PacketLens tool and upload
+                            your exported JSON file through the upload interface or select a demo file.
                         </p>
                         <p>
-                            4. <span className="text-green-400">View Mapped Data:</span> Once uploaded, PacketLens will
-                            process and map the packet data—visually presenting key details like source/destination IPs,
-                            ports, packet sizes, and other metadata for easy analysis.
+                            4. <span className="text-green-400">View Mapped Data:</span> Once uploaded, PacketLens will process and map
+                            the packet data—visually presenting key details like source/destination IPs, ports, packet sizes, and other
+                            metadata for easy analysis.
                         </p>
                     </div>
                 </div>
@@ -77,16 +109,20 @@ const Information = () => {
                     <h1 className="text-2xl sm:text-3xl md:text-4xl mb-4 font-bold">Network Around Globe //</h1>
                     <div className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-sm sm:text-base md:text-lg">
                         <p>
-                            <span className="text-green-400">We take your packet data:</span> Once you upload your JSON file, PacketLens reads and parses all TCP packet information.
+                            <span className="text-green-400">We take your packet data:</span> Once you upload your JSON file or select a
+                            demo file, PacketLens reads and parses all TCP packet information.
                         </p>
                         <p>
-                            <span className="text-green-400">We analyze and filter:</span> Each packet is inspected for details like source and destination IPs, ports, and packet size to identify meaningful data points.
+                            <span className="text-green-400">We analyze and filter:</span> Each packet is inspected for details like
+                            source and destination IPs, ports, and packet size to identify meaningful data points.
                         </p>
                         <p>
-                            <span className="text-green-400">We search and locate:</span> Using IP geolocation, PacketLens finds the physical locations associated with destination IPs.
+                            <span className="text-green-400">We search and locate:</span> Using IP geolocation, PacketLens finds the
+                            physical locations associated with destination IPs.
                         </p>
                         <p>
-                            <span className="text-green-400">We plot on the map:</span> Finally, we visualize where your TCP requests have been sent from your device, giving you a clear global picture of your network activity.
+                            <span className="text-green-400">We plot on the map:</span> Finally, we visualize where your TCP requests
+                            have been sent from your device, giving you a clear global picture of your network activity.
                         </p>
                     </div>
                 </div>
@@ -107,7 +143,7 @@ const Information = () => {
                             rel="noopener noreferrer"
                             className="hover:text-blue-500"
                         >
-                            <FaLinkedinIn className="cursor-pointer"/>
+                            <FaLinkedinIn className="cursor-pointer" />
                         </a>
                         <a
                             href="https://github.com/suvrat007/IPGeoTracker"
@@ -115,7 +151,7 @@ const Information = () => {
                             rel="noopener noreferrer"
                             className="hover:text-gray-300"
                         >
-                            <FaGithub className="cursor-pointer"/>
+                            <FaGithub className="cursor-pointer" />
                         </a>
                         <a
                             href="https://x.com/suvrat_007"
@@ -123,12 +159,11 @@ const Information = () => {
                             rel="noopener noreferrer"
                             className="hover:text-[#1DA1F2]"
                         >
-                            <FaXTwitter className="cursor-pointer"/>
+                            <FaXTwitter className="cursor-pointer" />
                         </a>
                     </div>
                 </div>
-                <div
-                    className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm flex-wrap gap-2 sm:gap-0">
+                <div className="flex flex-col sm:flex-row justify-between items-center text-xs sm:text-sm flex-wrap gap-2 sm:gap-0">
                     <div className="text-orange-400 font-semibold text-center sm:text-left">
                         <span>Designed By: Sumit Singh Bisht</span>
                         <span className="ml-0 sm:ml-6">Developed By: Suvrat Mittal</span>
