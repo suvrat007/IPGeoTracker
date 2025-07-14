@@ -2,7 +2,7 @@ import {useSelector} from "react-redux";
 import {Navigate} from "react-router";
 
 const ProtectedRoute = ({ children }) => {
-    const isAuthenticated = useSelector(state=>state.login.isLoggedin) // however you're checking (e.g. localStorage token, context, etc.)
+    const isAuthenticated = useSelector(state=>state.login.isLoggedin)
 
     if (!isAuthenticated) {
 

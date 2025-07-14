@@ -8,11 +8,10 @@ import MapPath from "./Components/Map Path/MapPath";
 import Home from "./Components/HomePage/Home";
 import Login from "./Components/Authentication/Login";
 import RouteComp from "./Components/RouteComp";
-import Spline from '@splinetool/react-spline';
 import SignUp from "./Components/Authentication/SignUp";
 import ProfilePage from "./Components/ProfilePage/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
-import NavBar from "./Components/NavBar/NavBar";
+import ProtectedRouteMaps from "./ProtectedRouteMaps";
 
 const appRouter = createBrowserRouter([
     {
@@ -26,17 +25,16 @@ const appRouter = createBrowserRouter([
             {
                 path: "/map",
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRouteMaps>
                         <Map />
-                    </ProtectedRoute>
-                ),
+                    </ProtectedRouteMaps>                ),
             },
             {
                 path: "/mapPath",
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRouteMaps>
                         <MapPath />
-                    </ProtectedRoute>
+                    </ProtectedRouteMaps>
                 ),
             },
             {
@@ -62,35 +60,12 @@ const appRouter = createBrowserRouter([
 const App= ()=> {
 
   return (
-      // <Provider store={store}>
-      //     <div
-      //         className="relative flex flex-row w-screen h-screen bg-cover bg-center font-montserrat overflow-x-hidden"
-      //         style={{ backgroundImage: "url('https://images.hdqwalls.com/download/space-stars-purple-sky-3n-1920x1080.jpg')" }}
-      //     >
-      //         {/* Foreground Content */}
-      //         <div className=" w-full h-full items-center">
-      //             <RouterProvider router={appRouter}/>
-      //         </div>
-      //
-      //         {/* Background Spline */}
-      //         <div className="inset-0 w-full h-full flex justify-center items-center">
-      //             <div className="right-0 w-full h-full md:w-[100%] md:h-[90%] lg:w-[95%] lg:h-[100%] ">
-      //                 <Spline scene="https://prod.spline.design/xppCBxhIhqTjTGX7/scene.splinecode"/>
-      //                 {/*<Spline scene="https://prod.spline.design/cUhdOzs9Q93Y2UJz/scene.splinecode" />*/}
-      //             </div>
-      //         </div>
-      //
-      //
-      //
-      //     </div>
-      // </Provider>
 
       <Provider store={store}>
           <div className="bg-black h-full text-white">
               <RouterProvider router={appRouter}/>
           </div>
       </Provider>
-
 
   );
 }

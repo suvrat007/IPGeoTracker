@@ -1,90 +1,102 @@
-import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
-import {useNavigate} from "react-router";
-import {emptyAddress} from "../../Utils/Redux/dataSlice";
-import {deleteCoordinates} from "../../Utils/Redux/justPinsSlice";
-import {deletePathPair} from "../../Utils/Redux/locationSlice";
-import {auth} from "../../Utils/firebaseConfig";
-import {logout} from "../../Utils/Redux/loggedinSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { auth } from "../../Utils/firebaseConfig";
+import { logout } from "../../Utils/Redux/loggedinSlice";
+import { emptyAddress } from "../../Utils/Redux/dataSlice";
+import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
+import { deletePathPair } from "../../Utils/Redux/locationSlice";
+import { FiMenu, FiX } from "react-icons/fi";
 
 const NavBar = () => {
-    const isLoggedIn = useSelector(state => state.login.isLoggedin)
+    const isLoggedIn = useSelector((state) => state.login.isLoggedin);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const handleLogout=()=>{
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const handleLogout = () => {
         auth.signOut();
         dispatch(logout());
-    }
+        setIsMenuOpen(false);
+    };
+
     const handleClick = () => {
+        navigate("/");
+        setIsMenuOpen(false);
+    };
+
+    const handleProfileClick = () => {
         dispatch(emptyAddress());
         dispatch(deleteCoordinates());
         dispatch(deletePathPair());
-        navigate('/')
-    }
+        navigate("/profile");
+        setIsMenuOpen(false);
+    };
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     return (
-        <div className="absolute flex flex-row top-0 left-0 bg-black w-full z-50">
-            <div className="flex flex-row text-white w-full h-15 justify-between p-1 items-center mx-20">
-                <div className="flex">
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"
-                         onClick={handleClick} className={'cursor-pointer'}>
-                        <circle cx="14" cy="14" r="14" fill="url(#paint0_linear_774_3855)"/>
+        <div className="bg-black w-full z-50 sticky top-0">
+            <div className="flex justify-between items-center text-white px-4 sm:px-6 md:px-10 py-5 max-w-[1440px] mx-auto">
+                <div className="flex items-center">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleClick} className="cursor-pointer">
+                        <circle cx="14" cy="14" r="14" fill="url(#paint0_linear_774_3855)" />
                         <defs>
-                            <linearGradient id="paint0_linear_774_3855" x1="3.5" y1="24.5" x2="21.5" y2="9.5"
-                                            gradientUnits="userSpaceOnUse">
-                                <stop offset="0.14" stopColor="#524CCE"/>
-                                <stop offset="0.63" stopColor="#E38A63"/>
-                                <stop offset="1" stopColor="#453FAC"/>
+                            <linearGradient id="paint0_linear_774_3855" x1="3.5" y1="24.5" x2="21.5" y2="9.5" gradientUnits="userSpaceOnUse">
+                                <stop offset="0.14" stopColor="#524CCE" />
+                                <stop offset="0.63" stopColor="#E38A63" />
+                                <stop offset="1" stopColor="#453FAC" />
                             </linearGradient>
                         </defs>
                     </svg>
-
-                    <h1 className={'ml-4 text-xl'}>PacketLens</h1>
-
-                    <div className="flex flex-col justify-center items-center text-md ml-20 cursor-pointer">
-                        <Link to={"/"} onClick={() => {
-                            dispatch(emptyAddress());
-                            dispatch(deleteCoordinates());
-                            dispatch(deletePathPair());
-                        }}>
-                            <p>Home</p>
-                        </Link>
-
-                    </div>
+                    <h1 className="ml-4 text-lg sm:text-xl font-semibold">PacketLens</h1>
                 </div>
 
-                <div className={'flex '}>
+                <div className="hidden md:flex flex-row items-center gap-8 text-sm sm:text-base">
+                    <Link to="/" onClick={() => { dispatch(emptyAddress()); dispatch(deleteCoordinates()); dispatch(deletePathPair()); }} className="hover:text-gray-300">Home</Link>
                     {isLoggedIn ? (
-                        <div className={'flex flex-row items-center justify-center'}>
-                            <p className={'m-2 bg-[#453FAC] px-4 py-2 rounded-[100px] cursor-pointer'}
-                               onClick={handleLogout}>SignOut</p>
-                            <div >
-                                <img src="https://www.svgrepo.com/show/335455/profile-default.svg"
-                                     className={'w-10 cursor-pointer'}
-                                     onClick={() => {
-                                         dispatch(emptyAddress());
-                                         dispatch(deleteCoordinates());
-                                         dispatch(deletePathPair());
-                                         navigate('/profile');
-                                     }}/>
-                            </div>
-                        </div>
-
+                        <>
+                            <button onClick={handleLogout} className="bg-[#453FAC] px-4 py-2 rounded-full hover:bg-[#524CCE] transition">SignOut</button>
+                            <img src="https://www.svgrepo.com/show/335455/profile-default.svg" className="w-8 h-8 cursor-pointer" onClick={handleProfileClick} alt="Profile" />
+                        </>
                     ) : (
                         <>
-                            <p className={'px-4 py-2 m-2 cursor-pointer'}>
-                                <Link to={'/login'}>SignIn</Link>
-                            </p>
-                            <p className={'bg-[#453FAC] px-4 py-2 m-2 rounded-[100px] cursor-pointer'}>
-                                <Link to={'/signup'}>SignUp</Link>
-                            </p>
+                            <Link to="/login" className="hover:text-gray-300">SignIn</Link>
+                            <Link to="/signup" className="bg-[#453FAC] px-4 py-2 rounded-full hover:bg-[#524CCE] transition">SignUp</Link>
                         </>
-
                     )}
-
                 </div>
-            </div>
-        </div>
-    )
-}
 
-export default NavBar
+                <button className="md:hidden text-2xl" onClick={toggleMenu} aria-label="Toggle menu">
+                    <FiMenu />
+                </button>
+            </div>
+
+            {isMenuOpen && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center md:hidden">
+                    <button className="absolute top-4 right-4 text-3xl text-white" onClick={toggleMenu} aria-label="Close menu">
+                        <FiX />
+                    </button>
+                    <div className="flex flex-col items-center gap-6 text-lg text-white">
+                        <Link to="/" onClick={() => { dispatch(emptyAddress()); dispatch(deleteCoordinates()); dispatch(deletePathPair()); setIsMenuOpen(false); }} className="hover:text-gray-300">Home</Link>
+                        {isLoggedIn ? (
+                            <>
+                                <button onClick={handleLogout} className="bg-[#453FAC] px-6 py-3 rounded-full hover:bg-[#524CCE] transition text-lg">SignOut</button>
+                                <img src="https://www.svgrepo.com/show/335455/profile-default.svg" className="w-10 h-10 cursor-pointer" onClick={handleProfileClick} alt="Profile" />
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/login" className="hover:text-gray-300" onClick={() => setIsMenuOpen(false)}>SignIn</Link>
+                                <Link to="/signup" className="bg-[#453FAC] px-6 py-3 rounded-full hover:bg-[#524CCE] transition text-lg" onClick={() => setIsMenuOpen(false)}>SignUp</Link>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default NavBar;

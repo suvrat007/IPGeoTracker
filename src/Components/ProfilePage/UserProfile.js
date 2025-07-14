@@ -43,9 +43,7 @@ const UserProfile = () => {
     return (
 
         <div className="bg-[#453FAC] min-h-screen p-12 text-white relative">
-            {/* Header with Profile Picture, Name, and Buttons */}
             <div className="flex items-center space-x-6 mb-10">
-                {/* Profile Picture */}
                 <div className="w-32 h-32">
                     <svg
                         width="124"
@@ -74,9 +72,6 @@ const UserProfile = () => {
                             <h2 className="text-lg text-gray-300">@{userData?.userName || ""}</h2>
                     </div>
                     <div className="flex space-x-4">
-                        <button className="bg-gray-500 text-white px-6 py-2 rounded-full">
-                            Edit Profile
-                        </button>
                         <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition duration-200"
                                 onClick={handleLogout}>
                             Log Out
@@ -85,7 +80,6 @@ const UserProfile = () => {
                 </div>
             </div>
 
-            {/* Profile Details Section */}
             <div className="flex flex-col gap-6">
                 <div className="border border-gray-300 p-3 rounded-lg">
                     <label className="block text-sm font-medium text-gray-200">First Name</label>

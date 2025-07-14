@@ -1,34 +1,32 @@
 import { Link } from "react-router-dom";
-import { emptyAddress } from "../../Utils/Redux/dataSlice";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
 import { deletePathPair } from "../../Utils/Redux/locationSlice";
 import React, {useEffect, useState} from "react";
 import { useDispatch } from "react-redux";
 import { HiOutlineDocument } from "react-icons/hi";
 import FileUpload from "./FileUpload";
-import {auth, firestore} from "../../Utils/firebaseConfig";
-import {doc, getDoc} from "firebase/firestore";
 
-const Header = () => {
+
+const Header = ({fileName}) => {
     const dispatch = useDispatch();
-    const [file, setFile] = useState(""); // State to hold the filename
+    const [file, setFile] = useState("");
 
 
     return (
-        <div className="w-full bg-[#453FAC] ">
+        <div className="w-full bg-[#453FAC] p-2">
             <div className={'border-b-2 border-black pb-2'}>
                 <div className="flex items-center ">
                     <HiOutlineDocument size={60} className="text-xl text-white mr-1 " />
                     <div>
                         <p className={'text-[.75rem]'}>CURRENT FILE</p>
-                        <p className={'text-2xl'}>FileName: { "No file selected"}</p>
+                        <p className={'text-2xl'}>FileName: {fileName ? fileName : "No File Selected"} </p>
                     </div>
                 </div>
                 <div className="flex justify-between p-2 ">
                     <Link to="/mapPath">
                         <button
                             onClick={() => dispatch(deleteCoordinates())}
-                            className="flex items-center gap-2 px-4 py-2 text-white border-2 border-white rounded-full text-sm font-medium hover:scale-105 transition"
+                            className="flex items-center gap-2 px-6 py-2 text-white border-2 border-white rounded-full text-sm font-medium hover:scale-105 transition"
                         >
                             <span>
                                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,7 +45,7 @@ const Header = () => {
                     <Link to="/map">
                         <button
                             onClick={() => dispatch(deletePathPair())}
-                            className="flex items-center gap-2 px-4 py-2 bg-white text-black border-2 border-black rounded-full text-sm font-medium hover:scale-105 transition"
+                            className="flex items-center gap-2 px-6 py-2 bg-white text-black border-2 border-black rounded-full text-sm font-medium hover:scale-105 transition"
                         >
                             <span>
                                 <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
