@@ -15,27 +15,27 @@ import { parseAndDispatchFile } from "./parseAndDispatchFile";
 const fileHoverData = {
     "test.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Instagram", "Twitter", "Facebook", "YouTube", "Reddit"],
+        sites: ["Instagram", "X","Facebook"],
     },
     "test2.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["GitHub", "Acternitnity", "StackOverflow", "MagicUI", "ChatGPT", "Claude", "Grok", "Gemini"],
+        sites: ["GitHub", "ChatGPT", "Gemini"],
     },
     "test3.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Netflix", "Prime Video", "Twitch", "Spotify", "JioHostar"],
+        sites: ["Netflix", "Prime Video","Spotify",],
     },
     "test4.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["BBC News", "The New York Times", "The Guardian", "NDTV", "Reuters"],
+        sites: ["BBC News", "The New York Times",  "NDTV"],
     },
     "test5.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Amazon", "Flipkart", "Nykaa", "Myntra", "eBay"],
+        sites: ["Amazon", "Nykaa", "Myntra"],
     },
     "test6.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Notion", "Drive", "Trello", "Canva", "Dropbox"],
+        sites: ["Notion", "Drive","Canva", "Dropbox"],
     },
 };
 

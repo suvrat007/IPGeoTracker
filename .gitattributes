@@ -1,6 +1,0 @@
-# Ensure package.json is NOT LFS
-!package.json filter=lfs diff=lfs merge=lfs -text
-
-# Keep this line if your demo JSON files are large and you want LFS to track them
-# (If they are individually small, you could remove LFS tracking for them, but keep this for now)
-public/Utils/DemoData/** filter=lfs diff=lfs merge=lfs -text
