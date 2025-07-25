@@ -1,3 +1,5 @@
+# Exclude package.json from LFS tracking (MUST be at the top or before *.json)
 !package.json filter=lfs diff=lfs merge=lfs -text
-*.json filter=lfs diff=lfs merge=lfs -text
+
+# This line is correct for your large demo data
 public/Utils/DemoData/** filter=lfs diff=lfs merge=lfs -text
