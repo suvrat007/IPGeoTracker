@@ -1,3 +1,5 @@
+// Information.jsx
+
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +8,7 @@ import { emptyAddress } from "../../Utils/Redux/dataSlice";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
 import { deletePathPair } from "../../Utils/Redux/locationSlice";
 import { addFile } from "../../Utils/Redux/fileSlice";
+// Assuming this path is correct for your helper function
 import { parseAndDispatchFile } from "./parseAndDispatchFile";
 
 // Define hover data for each file
@@ -50,22 +53,33 @@ const Information = () => {
             dispatch(deletePathPair());
             dispatch(addFile(file));
             setFileName(file);
+
+            // Fetch the JSON file from your new serverless API route
             const response = await fetch(`/api/getDemoData?fileName=${file}`);
 
             if (!response.ok) {
-                const errorBody = await response.json();
-                throw new Error(`Failed to fetch ${file} from API: ${errorBody.error || response.statusText}`);
+                // Attempt to read the error response from the API
+                let errorDetails = `Status: ${response.status} ${response.statusText}`;
+                try {
+                    const errorBody = await response.json();
+                    errorDetails += `, Details: ${errorBody.error || JSON.stringify(errorBody)}`;
+                } catch (jsonError) {
+                    // If response is not JSON, use its text
+                    errorDetails += `, Raw: ${await response.text()}`;
+                }
+                throw new Error(`Failed to fetch ${file} from API: ${errorDetails}`);
             }
 
-            // Get the raw text, as parseAndDispatchFile expects a string
-            const fileData = await response.text();
+            // The API now sends back actual JSON, so parse it directly
+            const fileData = await response.json(); // This will be the parsed JavaScript array/object
 
-            // Your existing parsing logic
+            // Pass the already-parsed data to parseAndDispatchFile
             const parsedData = parseAndDispatchFile(fileData, file, dispatch);
             setInputData(parsedData);
 
         } catch (error) {
             console.error(`Error fetching or parsing ${file}:`, error);
+            // Optionally, set an error message in state to display to the user
         } finally {
             setLoading(false);
         }
