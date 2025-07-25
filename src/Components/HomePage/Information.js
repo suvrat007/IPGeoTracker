@@ -50,15 +50,20 @@ const Information = () => {
             dispatch(deletePathPair());
             dispatch(addFile(file));
             setFileName(file);
+            const response = await fetch(`/api/getDemoData?fileName=${file}`);
 
-            // Fetch the JSON file
-            const response = await fetch(`/Utils/DemoData/${file}`);
             if (!response.ok) {
-                throw new Error(`Failed to fetch ${file}`);
+                const errorBody = await response.json();
+                throw new Error(`Failed to fetch ${file} from API: ${errorBody.error || response.statusText}`);
             }
+
+            // Get the raw text, as parseAndDispatchFile expects a string
             const fileData = await response.text();
+
+            // Your existing parsing logic
             const parsedData = parseAndDispatchFile(fileData, file, dispatch);
             setInputData(parsedData);
+
         } catch (error) {
             console.error(`Error fetching or parsing ${file}:`, error);
         } finally {
