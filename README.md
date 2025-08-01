@@ -1,6 +1,9 @@
 # PcketLens
 Explore the world through your packets! PacketLens transforms your Wireshark JSON exports into a dynamic, interactive map of your TCP packet journeys. Visualize hops, track latency, and discover the geography of your network traffic.
 
+<img width="1898" height="937" alt="image" src="https://github.com/user-attachments/assets/17091630-06d1-4f5c-8690-0b1033a6dba4" />
+
+
 # 🚀 Features
 Feature	Description
 🌍 Global Mapping	Pinpoint each TCP packet hop on an interactive Leaflet map.
@@ -27,11 +30,6 @@ cd packetLens
 
 # 2. Install dependencies
 npm install
-
-# 3. Copy and configure environment variables
-cp .env.example .env
-# Edit .env with your secrets:
-# PORT, API_URL, JWT_SECRET, GEOIP_API_KEY, MONGO_URI
 
 # 4. Start the app
 npm start
