@@ -1,6 +1,7 @@
+# PcketLens
 Explore the world through your packets! PacketLens transforms your Wireshark JSON exports into a dynamic, interactive map of your TCP packet journeys. Visualize hops, track latency, and discover the geography of your network traffic.
 
-🚀 Features
+# 🚀 Features
 Feature	Description
 🌍 Global Mapping	Pinpoint each TCP packet hop on an interactive Leaflet map.
 🔄 Wireshark JSON Import	Directly ingest JSON exports from Wireshark with one click.
@@ -10,7 +11,7 @@ Feature	Description
 ⚡️ Real-Time Preview	Instant visualization as you upload—no waiting required.
 📸 Screenshots
 
-🛠️ Tech Stack
+#🛠️ Tech Stack
 Frontend: React · Redux Toolkit · Leaflet · Tailwind CSS
 
 Backend: Node.js · Express · MongoDB · JWT Authentication
