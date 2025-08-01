@@ -1,93 +1,75 @@
-PacketLens
-An interactive web application that visualizes the global path of your TCP packets on a world map. Simply export your Wireshark capture as JSON, upload it, and watch your network traffic pin itself around the globe.
+Explore the world through your packets! PacketLens transforms your Wireshark JSON exports into a dynamic, interactive map of your TCP packet journeys. Visualize hops, track latency, and discover the geography of your network traffic.
 
-Demo
-https://packetlens.vercel.app/
+🚀 Features
+Feature	Description
+🌍 Global Mapping	Pinpoint each TCP packet hop on an interactive Leaflet map.
+🔄 Wireshark JSON Import	Directly ingest JSON exports from Wireshark with one click.
+👤 User Accounts	Secure login, dashboard, and history of all your packet captures.
+📈 Statistics & Insights	View per-capture metrics: total hops, average latency, geo-distribution.
+🎨 Dark Mode & Themes	Built-in light/dark themes for comfortable viewing anytime.
+⚡️ Real-Time Preview	Instant visualization as you upload—no waiting required.
+📸 Screenshots
+<p align="center"> <img src="https://user-images.githubusercontent.com/yourusername/packetlens-map.png" alt="Map View" width="45%"/> <img src="https://user-images.githubusercontent.com/yourusername/packetlens-dashboard.png" alt="Dashboard View" width="45%"/> </p>
+🛠️ Tech Stack
+Frontend: React · Redux Toolkit · Leaflet · Tailwind CSS
 
-Features
-Visualize TCP packet routes on an interactive Leaflet world map
-
-Import JSON exports from Wireshark
-
-User account system to save and manage packet captures
-
-Live API powered by Express (backend) and Redux Toolkit (frontend)
-
-Responsive design with Tailwind CSS
-
-Getting Started
-Prerequisites
-Node.js ≥14.x
-
-npm ≥6.x
-
-Installation
-Clone the repository
-
-bash
-git clone https://github.com/suvrat007/packetLens.git
-cd packetLens
-Copy environment variables
-
-bash
-cp .env.example .env
-Install dependencies
-
-bash
-npm install
-Start development server
-
-bash
-npm start
-Open your browser at http://localhost:3000
-
-Usage
-Create a free account or log in.
-
-In Wireshark, export your capture as JSON:
-File → Export Packet Dissections → as JSON
-
-On PacketLens, click Upload Capture, select your JSON file, and submit.
-
-Watch the pins trace your packets’ journey across the globe.
-
-Manage and revisit past captures from your dashboard.
-
-Project Structure
-text
-.
-├── api/                  # Express backend (endpoints, auth, geolocation)
-├── public/               # Static assets and HTML template
-├── src/                  # React app (components, Redux slices, hooks)
-├── .env                  # Environment variables
-├── package.json          # Project metadata & scripts
-├── tailwind.config.js    # Tailwind CSS configuration
-└── README.md             # This file
-Configuration
-Rename .env.example to .env and set:
-
-text
-PORT=3000
-API_URL=http://localhost:3000/api
-JWT_SECRET=<your_jwt_secret>
-GEOIP_API_KEY=<your_geolocation_api_key>
-MONGO_URI=<your_mongodb_connection_uri>
-Technology Stack
-Frontend: React, Redux Toolkit, Leaflet, Tailwind CSS
-
-Backend: Node.js, Express, MongoDB, JWT authentication
+Backend: Node.js · Express · MongoDB · JWT Authentication
 
 Geolocation: MaxMind GeoIP2 or IPstack API
 
-Contributing
+⚙️ Quick Start
+bash
+# 1. Clone the repo
+git clone https://github.com/suvrat007/packetLens.git
+cd packetLens
+
+# 2. Install dependencies
+npm install
+
+# 3. Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your secrets:
+# PORT, API_URL, JWT_SECRET, GEOIP_API_KEY, MONGO_URI
+
+# 4. Start the app
+npm start
+Open your browser at http://localhost:3000 and create an account!
+
+📂 Project Structure
+text
+packetLens/
+├── api/                  # Express routes, controllers, and middleware
+├── public/               # Static files and HTML template
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── features/         # Redux slices and async thunks
+│   ├── hooks/            # Custom React hooks
+│   ├── pages/            # Route-based page components
+│   └── assets/           # Images, icons, styles
+├── .env                  # Environment variables
+├── package.json          # Scripts and dependencies
+└── tailwind.config.js    # Tailwind CSS configuration
+🎯 Usage
+Sign Up / Log In
+
+Export from Wireshark:
+File → Export Packet Dissections → as JSON
+
+Upload your .json file on PacketLens.
+
+Visualize packet hops, zoom to regions, and inspect latencies.
+
+Analyze past captures in your personal dashboard.
+
+🤝 Contributing
+We welcome contributions! Please:
+
 Fork the repository
 
-Create a feature branch (git checkout -b feature/XYZ)
+Create a branch: git checkout -b feature/awesome
 
-Commit your changes (git commit -m "Add XYZ")
+Commit your changes: git commit -m "Add awesome feature"
 
-Push to your fork (git push origin feature/XYZ)
+Push to your fork: git push origin feature/awesome
 
-Open a pull request
-
-Please follow the existing code style and include tests for new functionality.
+Open a Pull Request describing your work
