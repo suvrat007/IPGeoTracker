@@ -12,7 +12,10 @@ Feature	Description
 📈 Statistics & Insights	View per-capture metrics: total hops, average latency, geo-distribution.
 🎨 Dark Mode & Themes	Built-in light/dark themes for comfortable viewing anytime.
 ⚡️ Real-Time Preview	Instant visualization as you upload—no waiting required.
-📸 Screenshots
+
+<img width="1919" height="948" alt="image" src="https://github.com/user-attachments/assets/30293ac7-34d4-4341-afee-7a6d5ab4cbe0" />
+
+<img width="1919" height="934" alt="image" src="https://github.com/user-attachments/assets/ea48861f-80d0-45ac-8ee4-6253935f13bc" />
 
 # 🛠️ Tech Stack
 
