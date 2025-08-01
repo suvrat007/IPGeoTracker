@@ -9,7 +9,7 @@ Feature	Description
 🎨 Dark Mode & Themes	Built-in light/dark themes for comfortable viewing anytime.
 ⚡️ Real-Time Preview	Instant visualization as you upload—no waiting required.
 📸 Screenshots
-<p align="center"> <img src="https://user-images.githubusercontent.com/yourusername/packetlens-map.png" alt="Map View" width="45%"/> <img src="https://user-images.githubusercontent.com/yourusername/packetlens-dashboard.png" alt="Dashboard View" width="45%"/> </p>
+
 🛠️ Tech Stack
 Frontend: React · Redux Toolkit · Leaflet · Tailwind CSS
 
