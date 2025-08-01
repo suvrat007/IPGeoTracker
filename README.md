@@ -11,10 +11,11 @@ Feature	Description
 ⚡️ Real-Time Preview	Instant visualization as you upload—no waiting required.
 📸 Screenshots
 
-#🛠️ Tech Stack
+# 🛠️ Tech Stack
+
 Frontend: React · Redux Toolkit · Leaflet · Tailwind CSS
 
-Backend: Node.js · Express · MongoDB · JWT Authentication
+Backend: Firebase, Firestore
 
 Geolocation: MaxMind GeoIP2 or IPstack API
 
@@ -50,8 +51,9 @@ packetLens/
 ├── .env                  # Environment variables
 ├── package.json          # Scripts and dependencies
 └── tailwind.config.js    # Tailwind CSS configuration
-🎯 Usage
-Sign Up / Log In
+
+# 🎯 Usage
+Create account and save your files
 
 Export from Wireshark:
 File → Export Packet Dissections → as JSON
@@ -62,7 +64,7 @@ Visualize packet hops, zoom to regions, and inspect latencies.
 
 Analyze past captures in your personal dashboard.
 
-🤝 Contributing
+# 🤝 Contributing
 We welcome contributions! Please:
 
 Fork the repository
