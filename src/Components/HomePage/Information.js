@@ -8,14 +8,14 @@ import { emptyAddress } from "../../Utils/Redux/dataSlice";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
 import { deletePathPair } from "../../Utils/Redux/locationSlice";
 import { addFile } from "../../Utils/Redux/fileSlice";
-// Assuming this path is correct for your helper function
 import { parseAndDispatchFile } from "./parseAndDispatchFile";
+import { toast } from "react-toastify";
 
 // Define hover data for each file
 const fileHoverData = {
     "test.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Instagram", "X","Facebook"],
+        sites: ["Instagram", "X", "Facebook"],
     },
     "test2.json": {
         text: "Destinations of the TCP packets captured in this file:",
@@ -23,11 +23,11 @@ const fileHoverData = {
     },
     "test3.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Netflix", "Prime Video","Spotify",],
+        sites: ["Netflix", "Prime Video", "Spotify"],
     },
     "test4.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["BBC News", "The New York Times",  "NDTV"],
+        sites: ["BBC News", "The New York Times", "NDTV"],
     },
     "test5.json": {
         text: "Destinations of the TCP packets captured in this file:",
@@ -35,7 +35,7 @@ const fileHoverData = {
     },
     "test6.json": {
         text: "Destinations of the TCP packets captured in this file:",
-        sites: ["Notion", "Drive","Canva", "Dropbox"],
+        sites: ["Notion", "Drive", "Canva", "Dropbox"],
     },
 };
 
@@ -43,43 +43,129 @@ const Information = () => {
     const dispatch = useDispatch();
     const [inputData, setInputData] = useState([]);
     const [fileName, setFileName] = useState("");
-    const [loading, setLoading] = useState(false); // Add loading state
+    const [loading, setLoading] = useState(false);
 
     const handleDemoFileClick = async (file) => {
         try {
             setLoading(true);
+            
+            // Clear previous data
             dispatch(emptyAddress());
             dispatch(deleteCoordinates());
             dispatch(deletePathPair());
             dispatch(addFile(file));
             setFileName(file);
 
-            // Fetch the JSON file from your new serverless API route
-            const response = await fetch(`/api/getDemoData?fileName=${file}`);
+            // Try multiple approaches to fetch the file
+            let fileData = null;
+            let fetchSuccess = false;
 
-            if (!response.ok) {
-                // Attempt to read the error response from the API
-                let errorDetails = `Status: ${response.status} ${response.statusText}`;
-                try {
-                    const errorBody = await response.json();
-                    errorDetails += `, Details: ${errorBody.error || JSON.stringify(errorBody)}`;
-                } catch (jsonError) {
-                    // If response is not JSON, use its text
-                    errorDetails += `, Raw: ${await response.text()}`;
+            // Method 1: Try the correct path based on your file structure
+            const correctPath = `/Utils/DemoData/${file}`;
+            try {
+                const response = await fetch(correctPath);
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && (contentType.includes('application/json') || contentType.includes('text/plain'))) {
+                        const textData = await response.text();
+                        fileData = JSON.parse(textData);
+                        fetchSuccess = true;
+                        console.log(`Successfully fetched ${file} from ${correctPath}`);
+                    }
                 }
-                throw new Error(`Failed to fetch ${file} from API: ${errorDetails}`);
+            } catch (correctPathError) {
+                console.log(`Correct path failed for ${file}, trying alternatives...`);
             }
 
-            // The API now sends back actual JSON, so parse it directly
-            const fileData = await response.json(); // This will be the parsed JavaScript array/object
+            // Method 2: Try API endpoint (if you have one)
+            if (!fetchSuccess) {
+                try {
+                    const apiResponse = await fetch(`/api/getDemoData?fileName=${file}`);
+                    if (apiResponse.ok) {
+                        const contentType = apiResponse.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            fileData = await apiResponse.json();
+                            fetchSuccess = true;
+                            console.log(`Successfully fetched ${file} from API`);
+                        }
+                    }
+                } catch (apiError) {
+                    console.log(`API endpoint failed for ${file}`);
+                }
+            }
 
-            // Pass the already-parsed data to parseAndDispatchFile
-            const parsedData = parseAndDispatchFile(fileData, file, dispatch);
-            setInputData(parsedData);
+            // Method 3: Try alternative paths as fallback
+            if (!fetchSuccess) {
+                const alternativePaths = [
+                    `/${file}`,
+                    `/assets/${file}`,
+                    `/data/${file}`,
+                    `/demo/${file}`,
+                    `/public/Utils/DemoData/${file}`
+                ];
+
+                for (const path of alternativePaths) {
+                    try {
+                        const altResponse = await fetch(path);
+                        if (altResponse.ok) {
+                            const contentType = altResponse.headers.get('content-type');
+                            if (contentType && (contentType.includes('application/json') || contentType.includes('text/plain'))) {
+                                const textData = await altResponse.text();
+                                fileData = JSON.parse(textData);
+                                fetchSuccess = true;
+                                console.log(`Successfully fetched ${file} from ${path}`);
+                                break;
+                            }
+                        }
+                    } catch (altError) {
+                        // Continue to next path
+                        continue;
+                    }
+                }
+            }
+
+            if (!fetchSuccess || !fileData) {
+                throw new Error(`Could not fetch ${file} from any location. Please check if the file exists in the public folder and is accessible.`);
+            }
+
+            // Validate the data structure
+            if (!Array.isArray(fileData)) {
+                throw new Error(`${file} does not contain a valid JSON array`);
+            }
+
+            // Process the data
+            const result = parseAndDispatchFile(fileData, file, dispatch);
+            setInputData(result);
+
+            // Show success notification
+            toast.success(`Successfully loaded ${file}`, {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "dark",
+            });
 
         } catch (error) {
             console.error(`Error fetching or parsing ${file}:`, error);
-            // Optionally, set an error message in state to display to the user
+            
+            // Show error notification
+            toast.error(`Failed to load ${file}: ${error.message}`, {
+                position: "top-right",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "dark",
+            });
+
+            // Clear the file state on error
+            dispatch(addFile(""));
+            setFileName("");
+            setInputData([]);
         } finally {
             setLoading(false);
         }
@@ -95,7 +181,8 @@ const Information = () => {
                             <button
                                 onClick={() => handleDemoFileClick(file)}
                                 className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl bg-[#1a1a1a] hover:bg-[#2a2a2a] border border-white/10 transition duration-200 shadow-md w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={loading} // Disable button during loading
+                                disabled={loading}
+                                title={`Load ${file} demo data`}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -112,12 +199,10 @@ const Information = () => {
                                     />
                                 </svg>
                                 <div className="text-white text-xs sm:text-sm font-medium truncate">
-                                    {file}
+                                    {loading && fileName === file ? "Loading..." : file}
                                 </div>
                             </button>
-                            <div
-                                className="absolute z-50 hidden group-hover:block bg-black/90 text-white text-xs sm:text-sm rounded-lg p-3 sm:p-4 w-64 sm:w-72 max-w-xs shadow-xl border border-white/10 top-full mt-2 left-1/2 transform -translate-x-1/2 transition-all duration-200"
-                            >
+                            <div className="absolute z-50 hidden group-hover:block bg-black/90 text-white text-xs sm:text-sm rounded-lg p-3 sm:p-4 w-64 sm:w-72 max-w-xs shadow-xl border border-white/10 top-full mt-2 left-1/2 transform -translate-x-1/2 transition-all duration-200">
                                 <p className="font-semibold mb-2">{fileHoverData[file].text}</p>
                                 <ul className="list-disc list-inside space-y-1 break-words">
                                     {fileHoverData[file].sites.map((site, i) => (
@@ -129,50 +214,42 @@ const Information = () => {
                     ))}
                 </div>
                 {loading && (
-                    <div className="flex justify-center items-center py-4">
-                        <div className="flex space-x-2">
+                    <div className="flex flex-col justify-center items-center py-4">
+                        <div className="flex space-x-2 mb-2">
                             <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
                             <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                             <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                             <div className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.6s' }}></div>
                         </div>
+                        <p className="text-sm text-gray-400">Loading demo data...</p>
                     </div>
                 )}
                 <p className="ml-4 sm:ml-6">WHAT WE PROVIDE?</p>
             </div>
+            
             <div className="flex flex-col md:flex-row justify-between border-b-2">
                 <div className="p-6 sm:p-8 md:p-10 md:w-[60%]">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl mb-4 font-bold">How to use //</h1>
-                    <div
-                        className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-sm sm:text-base md:text-lg leading-relaxed">
+                    <div className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-sm sm:text-base md:text-lg leading-relaxed">
                         <p>
                             1. <span className="text-green-400">Capture Data with Wireshark:</span> Use Wireshark to
-                            monitor your network
-                            traffic. Start a capture session and let it run while your desired network activity takes
-                            place.
+                            monitor your network traffic. Start a capture session and let it run while your desired network activity takes place.
                         </p>
                         <p>
                             2. <span className="text-green-400">Export as JSON:</span> After capturing, export the
-                            packet data in JSON
-                            format. In Wireshark, go to <span className="text-yellow-400">File > Export Packet Dissections > As JSON</span> and
-                            save the file.
+                            packet data in JSON format. In Wireshark, go to <span className="text-yellow-400">File > Export Packet Dissections > As JSON</span> and save the file.
                         </p>
                         <p>
                             3. <span className="text-green-400">Upload JSON to PacketLens:</span> Open the PacketLens
-                            tool and upload your
-                            exported JSON file through the upload interface or select a demo file.
+                            tool and upload your exported JSON file through the upload interface or select a demo file.
                         </p>
                         <p>
                             4. <span className="text-green-400">View Mapped Data:</span> Once uploaded, PacketLens will
-                            process and map the
-                            packet data—visually presenting key details like source/destination IPs, ports, packet
-                            sizes, and other metadata
-                            for easy analysis.
+                            process and map the packet data—visually presenting key details like source/destination IPs, ports, packet sizes, and other metadata for easy analysis.
                         </p>
                     </div>
                 </div>
-                <div
-                    className="flex justify-center items-center md:w-[40%] p-4 sm:p-6 md:p-8 border-t-2 md:border-t-0 md:border-l-2">
+                <div className="flex justify-center items-center md:w-[40%] p-4 sm:p-6 md:p-8 border-t-2 md:border-t-0 md:border-l-2">
                     <img src="/assets/1.jpg" className="w-full max-w-[300px] sm:max-w-[400px] p-4" alt="How to use"/>
                 </div>
             </div>
@@ -183,8 +260,7 @@ const Information = () => {
                     <div className="text-white p-4 rounded-2xl shadow-lg space-y-4 text-sm sm:text-base md:text-lg">
                         <p>
                             <span className="text-green-400">We take your packet data:</span> Once you upload your JSON
-                            file or select a
-                            demo file, PacketLens reads and parses all TCP packet information.
+                            file or select a demo file, PacketLens reads and parses all TCP packet information.
                         </p>
                         <p>
                             <span className="text-green-400">We analyze and filter:</span> Each packet is inspected for details like source
@@ -208,14 +284,14 @@ const Information = () => {
             <div className="py-6 sm:py-8 px-4 sm:px-6 md:px-10 flex flex-col gap-4 sm:gap-6">
                 <div className="flex flex-col sm:flex-row justify-between items-center">
                     <h1 className="text-xl sm:text-2xl font-bold text-center sm:text-left">
-                        NO PACKETS CAN ESCAPDE OUR LENS
+                        NO PACKETS CAN ESCAPE OUR LENS
                     </h1>
                     <div className="flex gap-4 sm:gap-6 text-white text-lg sm:text-xl mt-4 sm:mt-0">
                         <a
                             href="https://www.linkedin.com/in/suvrat-mittal-05b642294/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-blue-500"
+                            className="hover:text-blue-500 transition-colors"
                         >
                             <FaLinkedinIn className="cursor-pointer" />
                         </a>
@@ -223,7 +299,7 @@ const Information = () => {
                             href="https://github.com/suvrat007/IPGeoTracker"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-gray-300"
+                            className="hover:text-gray-300 transition-colors"
                         >
                             <FaGithub className="cursor-pointer" />
                         </a>
@@ -231,7 +307,7 @@ const Information = () => {
                             href="https://x.com/suvrat_007"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-[#1DA1F2]"
+                            className="hover:text-[#1DA1F2] transition-colors"
                         >
                             <FaXTwitter className="cursor-pointer" />
                         </a>

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { emptyAddress } from "../../Utils/Redux/dataSlice";
-import { useRef } from "react"; // Removed useState and useEffect
+import { useRef } from "react";
 import { auth, firestore } from "../../Utils/firebaseConfig";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { deleteCoordinates } from "../../Utils/Redux/justPinsSlice";
@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { FiLogOut } from "react-icons/fi";
 import { FaSave } from "react-icons/fa";
 import { addFile } from "../../Utils/Redux/fileSlice";
-import { parseAndDispatchFile } from "./parseAndDispatchFile"
+import { parseAndDispatchFile } from "./parseAndDispatchFile";
 import "react-toastify/dist/ReactToastify.css";
 
 const Body = () => {
@@ -19,18 +19,69 @@ const Body = () => {
     const isLoggedin = useSelector((state) => state.login.isLoggedin);
     const usid = useSelector((store) => store.login.uid);
     const fileInputRef = useRef(null);
-    const coordinateList = useSelector((state) => state.data.dataList); // Access dataList
-    const fileName = useSelector((state) => state.fileName); // Access fileName from fileSlice
+    const coordinateList = useSelector((state) => state.data.dataList);
+    const fileName = useSelector((state) => state.fileName);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const name = file.name.split(".")[0];
-            dispatch(addFile(name)); // Store file name in Redux
+            dispatch(addFile(name));
             const reader = new FileReader();
+            
             reader.onload = (e) => {
-                parseAndDispatchFile(e.target.result, name, dispatch); // Parse and dispatch to Redux
+                try {
+                    // Parse the JSON content
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    // Validate that it's an array
+                    if (!Array.isArray(jsonData)) {
+                        throw new Error("JSON file must contain an array of packet data");
+                    }
+                    
+                    // Pass the parsed data to the parse function
+                    parseAndDispatchFile(jsonData, name, dispatch);
+                    
+                    toast.success("File loaded successfully!", {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        theme: "dark",
+                    });
+                } catch (error) {
+                    console.error("Error parsing JSON file:", error);
+                    toast.error(`Failed to parse JSON file: ${error.message}`, {
+                        position: "top-right",
+                        autoClose: 4000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        theme: "dark",
+                    });
+                    // Clear the file input and redux state on error
+                    dispatch(addFile(""));
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
+                }
             };
+            
+            reader.onerror = () => {
+                toast.error("Failed to read file", {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    theme: "dark",
+                });
+            };
+            
             reader.readAsText(file);
         }
     };
@@ -39,16 +90,33 @@ const Body = () => {
         dispatch(emptyAddress());
         dispatch(deleteCoordinates());
         dispatch(deletePathPair());
-        dispatch(addFile("")); // Clear file name in Redux
+        dispatch(addFile(""));
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
         fileInputRef.current.click();
     };
 
     const handleSaveData = async () => {
-        if (!coordinateList?.length || !usid) return;
+        if (!coordinateList?.length || !usid) {
+            toast.warning("No data to save or user not logged in", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "dark",
+            });
+            return;
+        }
+        
         try {
             const userRef = collection(firestore, usid);
             await setDoc(doc(userRef, fileName), {
                 data: coordinateList,
+                timestamp: new Date().toISOString(),
+                fileName: fileName
             });
             toast.success("Your data has been saved", {
                 position: "top-right",
@@ -76,6 +144,14 @@ const Body = () => {
     const handleLogout = () => {
         auth.signOut();
         dispatch(logout());
+        // Clear file data on logout
+        dispatch(emptyAddress());
+        dispatch(deleteCoordinates());
+        dispatch(deletePathPair());
+        dispatch(addFile(""));
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     return (
@@ -98,7 +174,7 @@ const Body = () => {
 
                     {/* Right Upload Box */}
                     <div className="bg-black/90 text-white flex flex-col justify-center mb-10 px-4 sm:px-5 md:px-6 py-6 rounded-[2rem] rounded-r-none rounded-bl-none w-full md:w-[45%]">
-                        <h2 className="text-base sm:text-lg md:text-xl p-2">Upload your file here</h2>
+                        <h2 className="text-base sm:text-lg md:text-xl p-2">Upload your packet file here</h2>
                         <div className="flex items-center justify-between mb-4 bg-[#1a1a1a] rounded-3xl rounded-bl-none pl-4">
                             <input
                                 type="file"
@@ -113,6 +189,7 @@ const Body = () => {
                             <button
                                 onClick={handleSvgClick}
                                 className="p-2 hover:bg-white/10 rounded-full transition"
+                                title="Select JSON file"
                             >
                                 <svg width="32" height="32" viewBox="0 0 40 40" fill="none" className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10">
                                     <g clipPath="url(#clip0)">
@@ -142,6 +219,7 @@ const Body = () => {
                                             ? "bg-black text-white border-white hover:scale-105"
                                             : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                     }`}
+                                    title={!fileName || !coordinateList?.length ? "Upload a valid packet file first" : "View network paths on map"}
                                 >
                                     Map With Path
                                 </button>
@@ -156,6 +234,7 @@ const Body = () => {
                                             ? "bg-black text-white border-white hover:scale-105"
                                             : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                     }`}
+                                    title={!fileName || !coordinateList?.length ? "Upload a valid packet file first" : "View IP locations as pins on map"}
                                 >
                                     Map With Pins
                                 </button>
@@ -171,6 +250,7 @@ const Body = () => {
                                                 ? "bg-black text-white border-white hover:scale-105"
                                                 : "bg-gray-600 text-gray-300 border-gray-400 cursor-not-allowed"
                                         }`}
+                                        title={!fileName || !coordinateList?.length ? "No data to save" : "Save data to your account"}
                                     >
                                         <FaSave className="text-sm sm:text-base" />
                                         Save Data
@@ -179,6 +259,7 @@ const Body = () => {
                                     <button
                                         onClick={handleLogout}
                                         className="flex items-center gap-2 px-3 py-2 bg-black text-white border-2 border-white rounded-full text-xs sm:text-sm font-medium hover:scale-105 transition"
+                                        title="Sign out of your account"
                                     >
                                         <FiLogOut className="text-sm sm:text-base" />
                                         Logout
