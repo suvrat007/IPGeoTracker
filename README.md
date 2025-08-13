@@ -28,13 +28,17 @@ Geolocation: MaxMind GeoIP2 or IPstack API
 ⚙️ Quick Start
 bash
 # 1. Clone the repo
+```
 git clone https://github.com/suvrat007/packetLens.git
+```
+```
 cd packetLens
-
+```
 # 2. Install dependencies
+```
 npm install
-
-# 4. Start the app
+```
+# 3. Start the app
 ```
 npm start
 ```
