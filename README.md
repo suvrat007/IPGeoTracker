@@ -29,11 +29,9 @@ Geolocation: MaxMind GeoIP2 or IPstack API
 bash
 # 1. Clone the repo
 ```
-git clone https://github.com/suvrat007/packetLens.git
+git clone https://github.com/suvrat007/packetLens
 ```
-```
-cd packetLens
-```
+
 # 2. Install dependencies
 ```
 npm install
