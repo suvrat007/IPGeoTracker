@@ -35,23 +35,10 @@ cd packetLens
 npm install
 
 # 4. Start the app
+```
 npm start
-Open your browser at http://localhost:3000 and create an account!
-
-📂 Project Structure
-text
-packetLens/
-├── api/                  # Express routes, controllers, and middleware
-├── public/               # Static files and HTML template
-├── src/
-│   ├── components/       # Reusable UI components
-│   ├── features/         # Redux slices and async thunks
-│   ├── hooks/            # Custom React hooks
-│   ├── pages/            # Route-based page components
-│   └── assets/           # Images, icons, styles
-├── .env                  # Environment variables
-├── package.json          # Scripts and dependencies
-└── tailwind.config.js    # Tailwind CSS configuration
+```
+Open your browser at http://localhost:5173 and create an account!
 
 # 🎯 Usage
 Create account and save your files
